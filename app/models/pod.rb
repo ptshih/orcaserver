@@ -40,8 +40,9 @@ class Pod < ActiveRecord::Base
         :id => row['id'].to_s,
         :name => row['name'],
         :fromId => 123.to_s,
-        :fromPictureUrl => nil,
-        :message => row['message'].to_s,
+        :fromName => "test",
+        :fromPictureUrl => "http://graph.facebook.com/4/picture?type=square",
+        :message => 'hello',
         :participants => 'Me, You, Them',
         :lat => nil,
         :lng => nil,
@@ -58,8 +59,7 @@ class Pod < ActiveRecord::Base
   def self.message_index(pod_id)
     response_array = []
     query = "
-        SELECT *
-        FROM messages m
+        SELECT id, pod_id, hashid, message, updated_at FROM messages
         WHERE pod_id = #{pod_id}
         ORDER BY updated_at DESC
       "
@@ -67,12 +67,12 @@ class Pod < ActiveRecord::Base
     qresult.each(:as => :hash) do |row|
       # response_array << row
       response_array << {
-        :id => row['id'],
-        :podId => row['pod_id'],
+        :id => row['id'].to_s,
+        :podId => row['pod_id'].to_s,
         :sequence => row['hashid'],
-        :fromName => @,
         :fromId => 123.to_s,
-        :fromPictureUrl => nil,
+        :fromName => "test",
+        :fromPictureUrl => "http://graph.facebook.com/4/picture?type=square",
         :message => row['message'],
         :lat => nil,
         :lng => nil,
