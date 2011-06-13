@@ -6,7 +6,8 @@ require 'Sequel'
 # Pod.find(id).create_message(arg1,arg) on the worker box
 
 class Pod < ActiveRecord::Base
-  
+  @queue = :orcaworker
+    
   @DB = Sequel.connect(:adapter=>'mysql2', :host=>'localhost', :database=>'orca',
     :user=>'root', :password=>'')
   
