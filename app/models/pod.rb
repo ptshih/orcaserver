@@ -29,7 +29,7 @@ class Pod < ActiveRecord::Base
     response_array = []
     query = "
       SELECT * FROM pods
-      WHERE (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
+      WHERE id in (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
