@@ -1,5 +1,6 @@
 require 'resque'
-class OrcaWorkerModel < ActiveRecord::Base
+
+ActiveRecord::Base.class_eval do
   @queue = :orcaworker
   
   # delayed_job style async helpers

@@ -5,7 +5,7 @@ require 'Sequel'
 # Pod.async(:create_message,id,arg1,arg2) will result in
 # Pod.find(id).create_message(arg1,arg) on the worker box
 
-class Pod < OrcaWorkerModel
+class Pod < ActiveRecord::Base
   
   @DB = Sequel.connect(:adapter=>'mysql2', :host=>'localhost', :database=>'orca',
     :user=>'root', :password=>'')
