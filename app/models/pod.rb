@@ -67,9 +67,9 @@ class Pod < ActiveRecord::Base
       response_array << {
         :id => row['id'],
         :podId => row['pod_id'],
-        :sequence => nil,
+        :sequence => row['hashid'],
         :fromId => 123.to_s,
-        :fromPictureUrl => nil,
+        :fromPictureUrl => "http://graph.facebook.com/4/picture?type=square",
         :message => row['message'],
         :lat => nil,
         :lng => nil,
