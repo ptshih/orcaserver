@@ -1,4 +1,19 @@
+require 'OrcaWorker'
+require 'lib/apn'
+
 class User < ActiveRecord::Base
+  
+  def pushMessage(user_id,message,json,badge)
+    token = @current_user['device_token']
+    
+    # unscalable way for now...
+    apn = OrcaAPN.new
+    apn.push(token,message,json,badge)
+  end
+
+  def self.pushMessageToUser(user_id,message,json,badge)
+    User.async(:pushMessage,user_id,message,json,badge)
+  end
   
   # def initialize(facebook_id)
   #   
