@@ -74,6 +74,7 @@ class PodController < ApplicationController
     
     # Change to use create_message_via_resque
     response = Pod.async_create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
+    # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}
     respond_to do |format|
