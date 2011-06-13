@@ -39,8 +39,10 @@ class PodController < ApplicationController
     
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
+
+    params[:user_id] = 123
     
-    response = Pod.create_message(params[:pod_id], params[:message_uuid], params[:message])
+    response = Pod.create_message(params[:pod_id], params[:user_id], params[:message])
     
     response = {:success => "true"}
     respond_to do |format|
@@ -65,7 +67,7 @@ class PodController < ApplicationController
     params[:user_id] = 123
     
     # Change to use create_message_via_resque
-    response = Pod.create_message(params[:pod_id], params[:message_uuid], params[:message])
+    response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}
     respond_to do |format|

@@ -62,21 +62,40 @@ class Pod < OrcaWorkerModel
   end
 
   def self.create(user_id, name)
-    insert_response = @DB[" INSERT INTO pods (name, created_at, updated_at)
-          VALUES (?,now(),now())", name]
+    
+    query = "
+      INSERT INTO pods (name, created_at, updated_at)
+      VALUES (\'#{name}\', now(), now())
+    "
+
+    insert_response = @DB[query]
     response = "Created the pod with id = #{insert_response.insert.to_s}"
 
-    insert_response = @DB[" INSERT INTO pods_users (pod_id, user_id)
-          VALUES (?,?)", insert_response.insert.to_i, user_id.to_i]
+    # qresult = ActiveRecord::Base.connection.execute(query)
+
+    query = "
+      INSERT INTO pods_users (pod_id, user_id)
+      VALUES (#{insert_response.insert.to_i},#{user_id.to_i})
+    "
+
+    insert_response = @DB[query]
     
     return response
   end
   
   def self.create_message(pod_id, user_id, hashid, message)
 
-    insert_response = @DB[" INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
-          VALUES (?,?,?,?,now(),now())", pod_id, user_id, hashid, message]
-    response = "Created the message with id = #{insert_response.insert.to_s}"
+    query = "
+      INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
+            VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message}\', now(), now())
+    "
+    
+    # insert_response = @DB[query]
+    # response = "Created the message with id = #{insert_response.insert.to_s}"
+
+    qresult = ActiveRecord::Base.connection.execute(query)
+    response = ""
+
     return response
   end
 
