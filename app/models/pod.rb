@@ -29,7 +29,7 @@ class Pod < ActiveRecord::Base
     response_array = []
     
     # Get participants
-    # participants = ""
+    participants = ""
     # query = " select group_concat(first_name) as participants
     #           from (select first_name from pods_users map
     #           join users u on map.user_id = u.id
