@@ -1,4 +1,13 @@
 Orcapods::Application.routes.draw do
+  
+  # General read
+  match ':version/pod/index', :controller => 'pod', :action => 'index', :via => :get # get list of pods
+  match ':version/pod/:pod_id/message/index', :controller => 'pod', :action => 'message_index', :via => :get # get list of messages
+
+  # Writes
+  match ':version/pod/create', :controller => 'pod', :action =>'new', :via => :post 
+  match ':version/pod/:pod_id/message/create', :controller => 'pod', :action =>'message_new', :via => :post 
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -48,7 +57,7 @@ Orcapods::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => "welcome#index"
+  # root :to => 'welcome#index'
 
   # See how all your routes lay out with "rake routes"
 
