@@ -1,0 +1,6 @@
+# lol - hard coding IP to the worker queue box
+
+development: 50.19.226.231:6379
+test: 50.19.226.231:6379
+staging: 50.19.226.231:6379
+production: 50.19.226.231:6379
