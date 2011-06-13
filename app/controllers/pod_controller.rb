@@ -41,14 +41,13 @@ class PodController < ApplicationController
   # Create new pod
   # @param REQUIRED access_token
   # @param REQUIRED name
+  # http://localhost:3000/v1/pod/create?name=pod123&access_token=1
   def new
     
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
-
-    params[:user_id] = 123
     
-    response = Pod.create_message(params[:pod_id], params[:user_id], params[:message])
+    response = Pod.create(@current_user.id, params[:name])
     
     response = {:success => "true"}
     respond_to do |format|
@@ -74,7 +73,7 @@ class PodController < ApplicationController
     params[:message] += "from user #{@current_user.id}"
     
     # Change to use create_message_via_resque
-    response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
+    response = Pod.async_create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}
     respond_to do |format|
