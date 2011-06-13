@@ -17,15 +17,14 @@ class PodController < ApplicationController
   # Get index of messages: list of messages from a pod
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
+  # http://localhost:3000/v1/pod/1/message/index
   def message_index
     
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    # Change to use create_message_via_resque
-    Pod.create_message(params[:pod_id], params[:message_uuid], params[:message])
+    response = Pod.message_index(params[:pod_id])
     
-    response = {:success => "true"}
     respond_to do |format|
       format.xml  { render :xml => response }
       format.json  { render :json => response }
@@ -37,6 +36,11 @@ class PodController < ApplicationController
   # @param REQUIRED access_token
   # @param REQUIRED name
   def new
+    
+    Rails.logger.info request.query_parameters.inspect
+    puts "params: #{params}"
+    
+    response = Pod.create_message(params[:pod_id], params[:message_uuid], params[:message])
     
     response = {:success => "true"}
     respond_to do |format|
