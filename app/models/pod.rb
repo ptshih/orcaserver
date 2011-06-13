@@ -63,7 +63,18 @@ class Pod < ActiveRecord::Base
       "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
-      response_array << row
+      # response_array << row
+      response_array << {
+        :id => row['id'],
+        :podId => row['pod_id'],
+        :sequence => nil,
+        :fromId => 123.to_s,
+        :fromPictureUrl => nil,
+        :message => row['message'],
+        :lat => nil,
+        :lng => nil,
+        :timestamp => row['updated_at'].to_i
+      }
     end
     # @DB.fetch(query) do |row|
     #       response_array << row

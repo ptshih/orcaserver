@@ -50,9 +50,12 @@ class PodController < ApplicationController
       }
     end
     
+    response_hash = {}
+    response_hash['data'] = response
+    
     respond_to do |format|
       format.xml  { render :xml => response }
-      format.json  { render :json => response_array }
+      format.json  { render :json => response }
     end
     
   end
