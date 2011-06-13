@@ -1,5 +1,5 @@
 require 'OrcaWorker'
-require 'lib/apn'
+require 'apn.rb'
 
 class User < ActiveRecord::Base
   
