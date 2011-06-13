@@ -68,15 +68,15 @@ class PodController < ApplicationController
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    if params[:sequence].nil!
+    if params[:sequence].nil?
       params[:sequence] = rand
     end
     params[:user_id] = 123
     params[:message] += "from user #{@current_user.id}"
     
     # Change to use create_message_via_resque
-    # response = Pod.async_create_message(params[:pod_id], params[:user_id], params[:sequence], params[:message])
-    response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
+    response = Pod.async_create_message(params[:pod_id], params[:user_id], params[:sequence], params[:message])
+    # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}
     respond_to do |format|
