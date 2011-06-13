@@ -39,7 +39,7 @@ class Pod < ActiveRecord::Base
         :id => row['id'].to_s,
         :name => row['name'],
         :fromId => 123.to_s,
-        :fromPictureUrl => nil,
+        :fromPictureUrl => "http://graph.facebook.com/4/picture?type=square",
         :message => 'hello',
         :participants => 'Me, You, Them',
         :lat => nil,
