@@ -10,7 +10,7 @@ class PodController < ApplicationController
   # http://localhost:3000/v1/pods
   def index
     
-    response = Pod.index(@current_user.id, @current_user)
+    response = Pod.index(@current_user)
     
     response_hash = {}
     response_hash['data'] = response
@@ -93,11 +93,11 @@ class PodController < ApplicationController
     if params[:sequence].nil?
       params[:sequence] = rand
     end
-    params[:user_id] = 123
-    params[:message] += "from user #{@current_user.id}"
+
+    params[:message] += " from user #{@current_user.id}"
     
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], params[:user_id], params[:sequence], params[:message])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, params[:sequence], params[:message])
     # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}

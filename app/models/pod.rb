@@ -25,7 +25,7 @@ class Pod < ActiveRecord::Base
     return response_array
   end
   
-  def self.index(user_id, current_user)
+  def self.index(current_user)
     response_array = []
     
     # Get participants
@@ -44,7 +44,7 @@ class Pod < ActiveRecord::Base
       SELECT p.id, p.name, m.message, p.updated_at
       FROM pods p
       JOIN messages m on p.last_message_id = m.id
-      WHERE p.id in (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
+      WHERE p.id in (SELECT pod_id FROM pods_users WHERE user_id=#{current_user.id})
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
@@ -99,7 +99,7 @@ class Pod < ActiveRecord::Base
   end
 
 
-  def self.create(hashid, name)
+  def self.create(user_id, hashid, name)
     
     query = "
       INSERT INTO pods (name, hashid created_at, updated_at)
