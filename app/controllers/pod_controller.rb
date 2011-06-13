@@ -7,10 +7,10 @@ class PodController < ApplicationController
   end
   
   # Get index of pods
-  # http://localhost:3000/v1/pod/index
+  # http://localhost:3000/v1/pods
   def index
     
-    response = Pod.all
+    response = Pod.index(@current_user.id)
     
     # response = {:success => "true"}
     respond_to do |format|
@@ -23,7 +23,7 @@ class PodController < ApplicationController
   # Get index of messages: list of messages from a pod
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
-  # http://localhost:3000/v1/pod/1/message/index
+  # http://localhost:3000/v1/pods/1/messages
   def message_index
     
     Rails.logger.info request.query_parameters.inspect
@@ -41,7 +41,7 @@ class PodController < ApplicationController
   # Create new pod
   # @param REQUIRED access_token
   # @param REQUIRED name
-  # http://localhost:3000/v1/pod/create?name=pod123&access_token=1
+  # http://localhost:3000/v1/pods/create?name=pod123&access_token=1
   def new
     
     Rails.logger.info request.query_parameters.inspect
@@ -62,19 +62,21 @@ class PodController < ApplicationController
   # @param REQUIRED pod_id
   # @param REQUIRED message_uuid
   # @param REQUIRED message
-  # http://localhost:3000/v1/pod/1/message/create?message=helloworld832h4&access_token=1
+  # http://localhost:3000/v1/pods/1/messages/create?message=helloworld832h4&access_token=1
   def message_new
     
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    params[:message_uuid] = rand
+    if params[:sequence].nil!
+      params[:sequence] = rand
+    end
     params[:user_id] = 123
     params[:message] += "from user #{@current_user.id}"
     
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
-    # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
+    # response = Pod.async_create_message(params[:pod_id], params[:user_id], params[:sequence], params[:message])
+    response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}
     respond_to do |format|

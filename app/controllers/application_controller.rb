@@ -14,25 +14,28 @@ class ApplicationController < ActionController::Base
   end
   
   def authenticate_token
-     # authenticate current user
-     if !params[:access_token].nil?
-       @current_user = User.find_by_id(params[:access_token])
-
-       # check @current_user is not nil
-       if @current_user.nil?
-         error_response = {}
-         error_response["error_type"] = "AuthException"
-         error_response["error_message"] = "Unauthorized Token #{params[:access_token]}"
-         render :json => error_response, :status => :unauthorized
-       else
-         # load_facebook_api(@current_user.facebook_access_token)
-       end
-    else
-       error_response = {}
-       error_response["error_type"] = "AuthException"
-       error_response["error_message"] = "Unauthorized Nil Token"
-       render :json => error_response, :status => :unauthorized 
-     end
+    
+    @current_user = User.find_by_id(1)
+    
+    #  # authenticate current user
+    #  if !params[:access_token].nil?
+    #    @current_user = User.find_by_id(params[:access_token])
+    # 
+    #    # check @current_user is not nil
+    #    if @current_user.nil?
+    #      error_response = {}
+    #      error_response["error_type"] = "AuthException"
+    #      error_response["error_message"] = "Unauthorized Token #{params[:access_token]}"
+    #      render :json => error_response, :status => :unauthorized
+    #    else
+    #      # load_facebook_api(@current_user.facebook_access_token)
+    #    end
+    # else
+    #    # error_response = {}
+    #    # error_response["error_type"] = "AuthException"
+    #    # error_response["error_message"] = "Unauthorized Nil Token"
+    #    # render :json => error_response, :status => :unauthorized
+    #  end
    end
    
    
