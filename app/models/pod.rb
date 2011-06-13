@@ -28,9 +28,10 @@ class Pod < ActiveRecord::Base
   def self.index(user_id)
     response_array = []
     query = "
-      SELECT *
-      FROM pods a 
-      WHERE id in (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
+      SELECT p.id, p.name, m.message, p.updated_at
+      FROM pods p
+      JOIN messages m on p.last_message_id = m.id
+      WHERE p.id in (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
@@ -40,7 +41,7 @@ class Pod < ActiveRecord::Base
         :name => row['name'],
         :fromId => 123.to_s,
         :fromPictureUrl => nil,
-        :message => 'hello',
+        :message => row['message'].to_s,
         :participants => 'Me, You, Them',
         :lat => nil,
         :lng => nil,
@@ -57,7 +58,8 @@ class Pod < ActiveRecord::Base
   def self.message_index(pod_id)
     response_array = []
     query = "
-        SELECT hashid, message, updated_at FROM messages
+        SELECT *
+        FROM messages m
         WHERE pod_id = #{pod_id}
         ORDER BY updated_at DESC
       "
@@ -67,7 +69,8 @@ class Pod < ActiveRecord::Base
       response_array << {
         :id => row['id'],
         :podId => row['pod_id'],
-        :sequence => nil,
+        :sequence => row['hashid'],
+        :fromName => @,
         :fromId => 123.to_s,
         :fromPictureUrl => nil,
         :message => row['message'],
