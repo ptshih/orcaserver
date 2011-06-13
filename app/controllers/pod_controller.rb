@@ -10,7 +10,7 @@ class PodController < ApplicationController
   # http://localhost:3000/v1/pods
   def index
     
-    response = Pod.index(@current_user.id)
+    response = Pod.index(@current_user.id, @current_user)
     
     response_hash = {}
     response_hash['data'] = response
@@ -33,7 +33,7 @@ class PodController < ApplicationController
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    response = Pod.message_index(params[:pod_id])
+    response = Pod.message_index(params[:pod_id], @current_user)
     
     response_array = []
     response.each do |message|
