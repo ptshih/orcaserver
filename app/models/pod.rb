@@ -57,7 +57,7 @@ class Pod < ActiveRecord::Base
   def self.message_index(pod_id)
     response_array = []
     query = "
-        SELECT hashid, message, updated_at FROM messages
+        SELECT id, pod_id, hashid, message, updated_at FROM messages
         WHERE pod_id = #{pod_id}
         ORDER BY updated_at DESC
       "
@@ -65,8 +65,8 @@ class Pod < ActiveRecord::Base
     qresult.each(:as => :hash) do |row|
       # response_array << row
       response_array << {
-        :id => row['id'],
-        :podId => row['pod_id'],
+        :id => row['id'].to_s,
+        :podId => row['pod_id'].to_s,
         :sequence => row['hashid'],
         :fromId => 123.to_s,
         :fromPictureUrl => "http://graph.facebook.com/4/picture?type=square",
