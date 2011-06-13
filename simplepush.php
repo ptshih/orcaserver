@@ -1,8 +1,9 @@
 <?php
 
 // Put your device token here (without spaces):
-$deviceToken = '1d2301b234494ed1df0b6bfc848840543b5fa45afec8f402a7b7a493b8195464';
-
+$deviceToken = '1d2301b234494ed1df0b6bfc848840543b5fa45afec8f402a7b7a493b8195464'; // peter
+// $deviceToken = 'db3511d0240f2873eecf366c998ba4aaf3d145691027045ca14e8e281faf2813'; // gene
+// $deviceToken = 'b3ef602724f457b65e6c3bb553b326c55b6bd334c7be786ed38f970db6e3d0ea'; // tom
 // Put your private key's passphrase here:
 $passphrase = 'orca';
 
