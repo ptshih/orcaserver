@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(:version => 0) do
   create_table "messages", :force => true do |t|
     t.integer  "pod_id",     :limit => 8,                                 :default => 0
     t.integer  "user_id",    :limit => 8,                                 :default => 0
+    t.string   "hashid"
     t.string   "message"
     t.decimal  "lat",                     :precision => 20, :scale => 16
     t.decimal  "lng",                     :precision => 20, :scale => 16
