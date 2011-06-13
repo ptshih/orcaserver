@@ -1,4 +1,11 @@
-class Pod < ActiveRecord::Base
+require 'OrcaWorker'
+
+# => Pod(id: integer, name: string, last_message_id: integer, created_at: datetime, updated_at: datetime) 
+
+# Pod.async(:create_message,id,arg1,arg2) will result in
+# Pod.find(id).create_message(arg1,arg) on the worker box
+
+class Pod < OrcaWorkerModel
   
   def self.all
     
@@ -21,11 +28,15 @@ class Pod < ActiveRecord::Base
     return mysqlresults
   end
   
-  def self.create_via_resque(pod_id, message_uuid, message)
-  
+  def self.create_via_resque(pod_id, name)
+    Pod.async(:create,{
+      :name => name
+    })
   end
   
   def self.create_message(pod_id, message_uuid, message)
+    Pod.async(:create,pod_id,{})
   end
+
   
 end
