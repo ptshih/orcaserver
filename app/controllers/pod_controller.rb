@@ -1,5 +1,11 @@
 class PodController < ApplicationController
   
+  before_filter do |controller|
+    # This will set the @version variable
+    controller.load_version(["v1","v2","v3"])
+    controller.authenticate_token # sets the @current_user var based on passed in access_token (FB)
+  end
+  
   # Get index of pods
   # http://localhost:3000/v1/pod/index
   def index
@@ -57,7 +63,7 @@ class PodController < ApplicationController
   # @param REQUIRED pod_id
   # @param REQUIRED message_uuid
   # @param REQUIRED message
-  # http://localhost:3000/v1/pod/1/message/create?message='helloworld!'
+  # http://localhost:3000/v1/pod/1/message/create?message=helloworld832h4&access_token=1
   def message_new
     
     Rails.logger.info request.query_parameters.inspect
@@ -65,6 +71,7 @@ class PodController < ApplicationController
     
     params[:message_uuid] = rand
     params[:user_id] = 123
+    params[:message] += "from user #{@current_user.id}"
     
     # Change to use create_message_via_resque
     response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
