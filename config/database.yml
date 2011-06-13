@@ -1,22 +1,21 @@
-# SQLite version 3.x
-#   gem install sqlite3
 development:
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-  adapter: sqlite3
-  database: db/test.sqlite3
-  pool: 5
-  timeout: 5000
-
+   adapter: mysql2
+   encoding: utf8
+   database: orca
+   pool: 5
+   username: root
+   password: 
+   socket: /tmp/mysql.sock
+   encoding: utf8
+   collation: utf8_general_ci
+   
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
-  pool: 5
-  timeout: 5000
+ adapter:   mysql2
+ database:  orca
+ username:  friendmash
+ password:  Lik3aG6
+ host: friendmash-production.clhyg7sm4xmb.us-east-1.rds.amazonaws.com
+ port: 3306
+ 
+ 
+#  heroku config:add DATABASE_URL=mysql2://friendmash:Lik3aG6@friendmash-production.clhyg7sm4xmb.us-east-1.rds.amazonaws.com/orca
