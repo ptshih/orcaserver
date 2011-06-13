@@ -1,0 +1,2 @@
+orcaredis: cd resque; rake redis:start
+ocraworkers: COUNT=5 RAILS_ENV=production QUEUE=* bundle exec rake environment resque:work
