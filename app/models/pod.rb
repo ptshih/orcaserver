@@ -36,15 +36,15 @@ class Pod < ActiveRecord::Base
     qresult.each(:as => :hash) do |row|
       # response_array << row
       response_array << {
-        :id => row['id'],
+        :id => row['id'].to_s,
         :name => row['name'],
-        :fromId => 123,
+        :fromId => 123.to_s,
         :fromPictureUrl => nil,
         :message => 'hello',
         :participants => 'Me, You, Them',
         :lat => nil,
         :lng => nil,
-        :timestamp => row['updated_at'] 
+        :timestamp => row['updated_at'].to_i
       }
       
     end

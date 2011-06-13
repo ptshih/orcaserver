@@ -12,10 +12,13 @@ class PodController < ApplicationController
     
     response = Pod.index(@current_user.id)
     
+    response_hash = {}
+    response_hash['data'] = response
+    
     # response = {:success => "true"}
     respond_to do |format|
-      format.xml  { render :xml => response }
-      format.json  { render :json => response }
+      format.xml  { render :xml => response_hash }
+      format.json  { render :json => response_hash }
     end
     
   end
