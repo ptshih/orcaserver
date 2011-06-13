@@ -45,4 +45,6 @@ group :orcaworkers do
   gem "vegas" 
   gem "sinatra"
   gem "apnserver"
+  gem "daemons"
+  gem "eventmachine"
 end

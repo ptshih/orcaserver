@@ -2,17 +2,18 @@ require 'OrcaWorker'
 require 'apn.rb'
 
 class User < ActiveRecord::Base
+  @queue = :pushQueue
   
-  def pushMessage(user_id,message,json,badge)
-    token = @current_user['device_token']
-    
+  def self.pushMessage(user_id,token,message,json,badge)
     # unscalable way for now...
-    apn = OrcaAPN.new
-    apn.push(token,message,json,badge)
+    OrcaAPN.new.push(token,message,json,badge)
   end
 
   def self.pushMessageToUser(user_id,message,json,badge)
-    User.async(:pushMessage,user_id,message,json,badge)
+    token = User.find(user_id)['device_token']
+    if token
+      User.async(:pushMessage,user_id,token,message,json,badge)
+    end
   end
   
   # def initialize(facebook_id)
