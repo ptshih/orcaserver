@@ -28,12 +28,25 @@ class Pod < ActiveRecord::Base
   def self.index(user_id)
     response_array = []
     query = "
-      SELECT * FROM pods
+      SELECT *
+      FROM pods a 
       WHERE id in (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
-      response_array << row
+      # response_array << row
+      response_array << {
+        :id => row['id'],
+        :name => row['name'],
+        :fromId => 123,
+        :fromPictureUrl => nil,
+        :message => 'hello',
+        :participants => 'Me, You, Them',
+        :lat => nil,
+        :lng => nil,
+        :timestamp => row['updated_at'] 
+      }
+      
     end
     # @DB.fetch(query) do |row|
     #   response_array << row
