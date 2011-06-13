@@ -1,2 +1,2 @@
 orcaredis: cd resque; rake redis:start
-ocraworkers: QUEUE=* rake environment resque:work
+ocraworkers: COUNT=5 QUEUE=* rake environment resque:work

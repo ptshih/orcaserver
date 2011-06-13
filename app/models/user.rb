@@ -7,8 +7,7 @@ class User < ActiveRecord::Base
     token = @current_user['device_token']
     
     # unscalable way for now...
-    apn = OrcaAPN.new
-    apn.push(token,message,json,badge)
+    OrcaAPN.new.push(token,message,json,badge)
   end
 
   def self.pushMessageToUser(user_id,message,json,badge)
