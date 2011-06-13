@@ -1,7 +1,7 @@
 require 'resque'
 
 ActiveRecord::Base.class_eval do
-  @queue = :orcaworker
+  # @queue = :orcaworker
   
   # delayed_job style async helpers
   # https://github.com/defunkt/resque/blob/master/examples/async_helper.rb
@@ -10,10 +10,15 @@ ActiveRecord::Base.class_eval do
   # Pod.find(id).create_message(arg1,arg) on the worker box
   # note - args must be json serializable
   
-  def self.perform(id, method, *args)
-      find(id).send(method, *args)
+  # User.async(:create,nil,{:name=>'gene'})
+  
+  # User.async(:update_attribute,3,'name','gene')
+  
+  def self.perform(method, *args)
+    self.send(method, *args)
   end
+  
   def self.async(method, *args)
-    Resque.enqueue(Pod, id, method, *args)
+    Resque.enqueue(self, method, *args)
   end
 end
