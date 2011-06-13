@@ -100,6 +100,8 @@ class Pod < ActiveRecord::Base
 
     qresult = ActiveRecord::Base.connection.execute(query)
     response = ""
+    
+    User.pushMessageToUser(user_id,message,{:hashid=>hashid},1)
 
     return response
   end
