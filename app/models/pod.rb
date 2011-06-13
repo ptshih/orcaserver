@@ -1,5 +1,5 @@
 require 'OrcaWorker'
-require 'Sequel'
+# require 'Sequel'
 # => Pod(id: integer, name: string, last_message_id: integer, created_at: datetime, updated_at: datetime) 
 
 # Pod.async(:create_message,id,arg1,arg2) will result in
@@ -8,8 +8,8 @@ require 'Sequel'
 class Pod < ActiveRecord::Base
   @queue = :orcaworker
     
-  @DB = Sequel.connect(:adapter=>'mysql2', :host=>'localhost', :database=>'orca',
-    :user=>'root', :password=>'')
+  # @DB = Sequel.connect(:adapter=>'mysql2', :host=>'localhost', :database=>'orca',
+  #     :user=>'root', :password=>'')
   
   def self.all
     response_array = []    
@@ -57,31 +57,35 @@ class Pod < ActiveRecord::Base
     #     end
     return response_array    
   end
-  
-  def self.async_create_message(pod_id, user_id, hashid, message)
-    Pod.async(:create_message,pod_id, user_id, hashid, message)
-  end
 
-  def self.create(user_id, name)
+
+  def self.create(hashid, name)
     
     query = "
-      INSERT INTO pods (name, created_at, updated_at)
-      VALUES (\'#{name}\', now(), now())
+      INSERT INTO pods (name, hashid created_at, updated_at)
+      VALUES (\'#{name}\', \'#{hashid}\', now(), now())
     "
 
-    insert_response = @DB[query]
-    response = "Created the pod with id = #{insert_response.insert.to_s}"
+    # insert_response = @DB[query]
+    # response = "Created the pod with id = #{insert_response.insert.to_s}"
 
-    # qresult = ActiveRecord::Base.connection.execute(query)
+    qresult = ActiveRecord::Base.connection.execute(query)
 
     query = "
       INSERT INTO pods_users (pod_id, user_id)
-      VALUES (#{insert_response.insert.to_i},#{user_id.to_i})
+      SELECT id, #{user_id.to_i} FROM pods WHERE hashid=#{hashid})
     "
 
-    insert_response = @DB[query]
+    # insert_response = @DB[query]
+
+    qresult = ActiveRecord::Base.connection.execute(query)
     
     return response
+  end
+  
+  def self.async_create_message(pod_id, user_id, hashid, message)
+    Pod.async(:create_message,pod_id, user_id, hashid, message)
+    return ""
   end
   
   def self.create_message(pod_id, user_id, hashid, message)
