@@ -12,6 +12,8 @@ class PodController < ApplicationController
     
     response = Pod.index(@current_user.id)
     
+    
+    
     # response = {:success => "true"}
     respond_to do |format|
       format.xml  { render :xml => response }
@@ -24,6 +26,7 @@ class PodController < ApplicationController
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
   # http://localhost:3000/v1/pods/1/messages
+  # http://orcapods.heroku.com/v1/pods/1/messages
   def message_index
     
     Rails.logger.info request.query_parameters.inspect
@@ -31,9 +34,24 @@ class PodController < ApplicationController
     
     response = Pod.message_index(params[:pod_id])
     
+    response_array = []
+    response.each do |message|
+      response_array << {
+        :id => message['id'],
+        :podId => nil,
+        :sequence => nil,
+        :fromId => nil,
+        :fromPictureUrl => nil,
+        :message => nil,
+        :lat => nil,
+        :lng => nil,
+        :timestamp => nil
+      }
+    end
+    
     respond_to do |format|
       format.xml  { render :xml => response }
-      format.json  { render :json => response }
+      format.json  { render :json => response_array }
     end
     
   end
