@@ -140,6 +140,7 @@ class LoginController < ApplicationController
       params_hash['since'] = since.to_i
     end
 
+    # http://graph.facebook.com/645750651/friends?access_token132514440148709%257Cf09dd88ba268a8727e4f3fd5-645750651%257Ck21j0yXPGxYGbJPd0eOEMTy5ZN4
     response = Typhoeus::Request.get("#{@@fb_host}/#{facebook_id}/friends", :params => params_hash, :headers => headers_hash, :disable_ssl_peer_verification => true)
 
     parsed_response = self.check_facebook_response_for_errors(response)
