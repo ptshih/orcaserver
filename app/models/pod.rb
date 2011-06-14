@@ -113,11 +113,12 @@ class Pod < ActiveRecord::Base
     qresult = ActiveRecord::Base.connection.execute(query)
     
     queryreceivers = "
-      select user_id from pods_users
-      where pod_id = #{pod_id}
-        and device_token is not null
-        and user_id != #{user_id}
-      limit 3
+      select user_id from pods_users map
+      join users u on u.id = map.user_id
+      where map.pod_id = #{pod_id}
+        and u.device_token is not null
+        and map.user_id != #{user_id}
+      limit 5
     "
     receivers = ActiveRecord::Base.connection.execute(queryreceivers)
     qresult.each(:as => :hash) do |row|
