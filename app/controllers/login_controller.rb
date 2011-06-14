@@ -30,8 +30,8 @@ class LoginController < ApplicationController
     # Create a new user if necessary
     @current_user = User.find_or_initialize_by_facebook_id(params[:facebook_id])
     @current_user.facebook_access_token = params[:facebook_access_token]
-    @current_user.first_name = params[:first_name]
-    @current_user.last_name = params[:last_name]
+    @current_user.first_name = params[:facebook_first_name]
+    @current_user.last_name = params[:facebook_last_name]
     @current_user.full_name = params[:facebook_name]
     @current_user.save
     
