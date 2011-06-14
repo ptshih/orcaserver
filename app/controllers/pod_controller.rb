@@ -8,7 +8,7 @@ class PodController < ApplicationController
   
   # Get index of pods
   # http://localhost:3000/v1/pods
-  # http://orcapods.heroku.com/v1/pods?access_token=
+  # http://orcapods.heroku.com/v1/pods?access_token=ab20afcd5def3b0cbc5f5352b63da16491a5715f3a0fbfd32179a8d73930532739525ca2387af8f8256d2b47a90af056cc013ced3dad56805852efc8080578b9
   def index
     
     response_hash = {}

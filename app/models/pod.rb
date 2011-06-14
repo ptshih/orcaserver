@@ -108,7 +108,7 @@ class Pod < ActiveRecord::Base
     query = "
       UPDATE pods p, (select id, created_at from messages where hashid = \'#{hashid}\') m
       SET p.last_message_id = m.id, p.created_at = m.created_at
-      WHERE p=#{pod_id}
+      WHERE p.id=#{pod_id}
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     
