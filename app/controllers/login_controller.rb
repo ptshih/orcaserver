@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'typhoeus'
-require 'yajl/json_gem'
+require 'json'
 
 class LoginController < ApplicationController
   before_filter do |controller|
@@ -12,7 +12,7 @@ class LoginController < ApplicationController
     @@fb_host = 'https://graph.facebook.com'
     @@fb_app_id = '132514440148709'
     @@fb_app_secret = '925b0a280e685631acf466dfea13b154'
-    @@fb_app_access_token = '132514440148709|a7Wfkm22IRitMGJSGTUtr1hI7CE'
+    @@fb_app_access_token = "132514440148709%257Cf09dd88ba268a8727e4f3fd5-645750651%257Ck21j0yXPGxYGbJPd0eOEMTy5ZN4"
     
   end
   
@@ -58,11 +58,8 @@ class LoginController < ApplicationController
     # Fetch friends for current user
     find_friends_for_facebook_id(@current_user.facebook_id, nil)
     
-    # The response should include the current user ID and name for the client to cache
-    session_response_hash = {
-      :access_token => @current_user.access_token,
-      :facebook_id => @current_user.facebook_id
-    }
+    # The response only local access_token    
+    session_response_hash = {:access_token => @current_user.access_token}
     
     respond_to do |format|
       format.xml  { render :xml => session_response_hash.to_xml }
@@ -103,7 +100,7 @@ class LoginController < ApplicationController
   # https://graph.facebook.com/me/friends?fields=third_party_id,first_name,last_name,name,gender,locale&access_token=???
   # find_friends_for_facebook_id()
   def find_friends_for_facebook_id(facebook_id = nil, since = nil)
-    if facebook_id.nil? then facebook_id = @@peter_id end
+    if facebook_id.nil? then facebook_id = @@james_id end
 
     puts "START find friends for facebook_id: #{facebook_id}"
 
@@ -111,7 +108,7 @@ class LoginController < ApplicationController
     headers_hash['Accept'] = 'application/json'
 
     params_hash = Hash.new
-    params_hash['access_token'] = @access_token
+    params_hash['access_token'] = @fb_app_access_token
     params_hash['fields'] = 'third_party_id,first_name,last_name,name,gender,locale'
 
     if !since.nil? then
@@ -188,7 +185,7 @@ class LoginController < ApplicationController
         # puts "\n\n======\n\nPrinting raw response: #{response.body}\n\n=======\n\n"
 
         # parse the json response
-        parsed_response = JSON.parse_json(response.body)
+        parsed_response = JSON.parse(response.body)
 
         # read generic error
         if (!parsed_response["error_code"].nil?) || (!parsed_response["error_msg"].nil?)
