@@ -25,42 +25,18 @@ class Pod < ActiveRecord::Base
     return response_array
   end
   
-  def self.index(current_user)
+  def self.index(user_id)
     response_array = []
-    
-    # Get participants
-    participants = ""
-    # query = " select group_concat(first_name) as participants
-    #           from (select first_name from pods_users map
-    #           join users u on map.user_id = u.id
-    #           where pod_id=1
-    #           limit 5) a"
-    # qresult = ActiveRecord::Base.connection.execute(query)
-    # qresult.each(:as => :hash) do |row|
-    #     participants = row['participants']
-    # end
-    
     query = "
-      SELECT p.id, p.name, m.message, p.updated_at
+      SELECT p.id, p.name, m.message, u.id as userid, u.facebook_id, u.full_name, p.updated_at
       FROM pods p
       JOIN messages m on p.last_message_id = m.id
-      WHERE p.id in (SELECT pod_id FROM pods_users WHERE user_id=#{current_user.id})
+      JOIN users u on u.id = m.user_id
+      WHERE p.id in (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
-      # response_array << row
-      response_array << {
-        :id => row['id'].to_s,
-        :name => row['name'],
-        :fromId => current_user.facebook_id.to_s,
-        :fromName => current_user.full_name,
-        :fromPictureUrl => "http://graph.facebook.com/"+current_user.facebook_id.to_s+"/picture?type=square",
-        :message => row['message'],
-        :participants => participants,
-        :lat => nil,
-        :lng => nil,
-        :timestamp => row['updated_at'].to_i
-      }
+      response_array << row
     end
     # @DB.fetch(query) do |row|
     #   response_array << row
@@ -68,29 +44,18 @@ class Pod < ActiveRecord::Base
     return response_array
   end
   
-  def self.message_index(pod_id, current_user)
+  def self.message_index(pod_id, user_id)
     response_array = []
     query = "
-        SELECT id, pod_id, hashid, message, updated_at
+        SELECT id, pod_id, hashid, u.id as userid, u.facebook_id, u.full_name, message, updated_at
         FROM messages m
+        join uesrs u on u.id = m.user_id
         WHERE pod_id = #{pod_id}
         ORDER BY updated_at DESC
       "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
-      # response_array << row
-      response_array << {
-        :id => row['id'].to_s,
-        :podId => row['pod_id'].to_s,
-        :sequence => row['hashid'],
-        :fromId => current_user.facebook_id.to_s,
-        :fromName => current_user.full_name,
-        :fromPictureUrl => "http://graph.facebook.com/"+current_user.facebook_id.to_s+"/picture?type=square",
-        :message => row['message'],
-        :lat => nil,
-        :lng => nil,
-        :timestamp => row['updated_at'].to_i
-      }
+      response_array << row
     end
     # @DB.fetch(query) do |row|
     #       response_array << row
