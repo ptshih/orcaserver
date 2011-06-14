@@ -10,9 +10,25 @@ class PodController < ApplicationController
   # http://localhost:3000/v1/pods
   def index
     
-    response = Pod.index(@current_user)
-    
     response_hash = {}
+    
+    resp = Pod.index(@current_user.id)
+    response = []
+    resp.each do |pod|
+      response << {
+        :id => pod['id'].to_s,
+        :name => pod['name'],
+        :fromId => pod['userid'],
+        :fromName => pod['full_name'],
+        :fromPictureUrl => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
+        :message => pod['message'],
+        :participants => 'participants',
+        :lat => nil,
+        :lng => nil,
+        :timestamp => pod['updated_at'].to_i
+      }
+    end
+    
     response_hash['data'] = response
     
     # response = {:success => "true"}
@@ -33,21 +49,22 @@ class PodController < ApplicationController
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    response = Pod.message_index(params[:pod_id], @current_user)
+    resp = Pod.message_index(params[:pod_id], @current_user.id)
     
-    response_array = []
-    response.each do |message|
-      response_array << {
-        :id => message['id'],
-        :podId => nil,
-        :sequence => nil,
-        :fromId => nil,
-        :fromPictureUrl => nil,
-        :message => nil,
-        :lat => nil,
-        :lng => nil,
-        :timestamp => nil
-      }
+    response = []
+    resp.each do |message|
+      response << {
+          :id => message['id'].to_s,
+          :podId => message['pod_id'].to_s,
+          :sequence => message['hashid'],
+          :fromId => message['userid'],
+          :fromName => message['full_name'],
+          :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
+          :message => message['message'],
+          :lat => nil,
+          :lng => nil,
+          :timestamp => message['updated_at'].to_i
+        }
     end
     
     response_hash = {}
