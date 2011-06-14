@@ -3,7 +3,7 @@ Orcapods::Application.routes.draw do
   # Register/signons
   match ':version/register', :to => 'login#register', :via => ["get","post"]  # CREATE: Register new user with access_token
   match ':version/session', :to => 'login#session', :via => ["get","post"] # SESSION: Start a new session for the current user
-  match ':version/registerpush', :to => 'login#session', :via => ["get","post"] # SESSION: Start a new session for the current user
+  match ':version/registerpush', :to => 'login#registerpush', :via => ["get","post"] # SESSION: Start a new session for the current user
 
   
   # Read

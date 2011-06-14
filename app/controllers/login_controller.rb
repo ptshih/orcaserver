@@ -16,20 +16,6 @@ class LoginController < ApplicationController
     
   end
   
-  ###
-  ### Convenience Methods
-  ###
-  
-  def find_friends_for_current_user
-    # last_fetched_friends = @current_user.last_fetched_friends
-    # puts "Last fetched friends before: #{last_fetched_friends}"
-
-    # Get all friends from facebook for the current user again
-    LoginController.find_friends_for_facebook_id(@current_user.facebook_id, nil)
-    
-    return true
-  end
-  
   # API registers a new first time User from a client
   # Receives a POST with facebook_access_token from the user
   #   :facebook_access_token
@@ -44,8 +30,8 @@ class LoginController < ApplicationController
     # Create a new user if necessary
     @current_user = User.find_or_initialize_by_facebook_id(params[:facebook_id])
     @current_user.facebook_access_token = params[:facebook_access_token]
-    @current_user.first_name = params[:first_name]
-    @current_user.last_name = params[:last_name]
+    @current_user.first_name = params[:facebook_first_name]
+    @current_user.last_name = params[:facebook_last_name]
     @current_user.full_name = params[:facebook_name]
     @current_user.save
     
@@ -55,8 +41,11 @@ class LoginController < ApplicationController
       @current_user.set_joined_at
     end
     
+    # Adding everyone to party pod where pod_id=1
+    @current_user.add_to_party_pod
+    
     # Fetch friends for current user
-    find_friends_for_facebook_id(@current_user.facebook_id, nil)
+    # find_friends_for_facebook_id(@current_user.facebook_id, nil)
     
     # The response only local access_token    
     session_response_hash = {:access_token => @current_user.access_token}
@@ -71,9 +60,10 @@ class LoginController < ApplicationController
   # API for registering a user's device for pushing
   # :access_token
   # :device_token
+  # http://orcapods.heroku.com/v1/registerpush?device_token=helloworld&access_token=893d80135f5128349a89a4915be15fd442cc6e4c3dd63e7bedc1213645cb554827a774fddaac4918e19ad0511f026de7671d22f101033dbbb61062ba0e168377
   def registerpush
     response = {:success => "false"}
-    @current_user = User.find_by_access_token(params[:access_token])
+    @current_user = User.find_by_access_token(params[:access_token].to_s)
     if @current_user.nil?
       response = {:success => "false"}
     else
@@ -96,7 +86,7 @@ class LoginController < ApplicationController
     @current_user = User.find_by_access_token(params[:access_token])
         
     # Fetch content for current user
-    find_friends_for_facebook_id(@current_user.facebook_id, since = nil)
+    # find_friends_for_facebook_id(@current_user.facebook_id, since = nil)
     
     # return new friends
     # We want to send the entire friendslist hash of id, name to the client

@@ -68,7 +68,7 @@ class Pod < ActiveRecord::Base
     
     query = "
       INSERT INTO pods (name, hashid created_at, updated_at)
-      VALUES (\'#{name}\', \'#{hashid}\', now(), now())
+      VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
     "
 
     # insert_response = @DB[query]
@@ -85,7 +85,7 @@ class Pod < ActiveRecord::Base
 
     qresult = ActiveRecord::Base.connection.execute(query)
     
-    return response
+    return nil
   end
   
   def self.async_create_message(pod_id, user_id, hashid, message)
@@ -97,18 +97,57 @@ class Pod < ActiveRecord::Base
 
     query = "
       INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
-            VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message}\', now(), now())
+            VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
     "
     
     # insert_response = @DB[query]
     # response = "Created the message with id = #{insert_response.insert.to_s}"
 
     qresult = ActiveRecord::Base.connection.execute(query)
-    response = ""
     
-    User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
+    query = "
+      UPDATE pods p, (select id, created_at from messages where hashid = \'#{hashid}\') m
+      SET p.last_message_id = m.id, p.created_at = m.created_at
+      WHERE p.id=#{pod_id}
+    "
+    qresult = ActiveRecord::Base.connection.execute(query)
+    
+    queryreceivers = "
+      select distinct user_id from pods_users map
+      join users u on u.id = map.user_id
+      where map.pod_id = #{pod_id}
+        and u.device_token is not null
+        and map.user_id != #{user_id}
+        
+    "
+    # queryreceivers = "
+    #   select distinct device_token
+    #   from users
+    #   where device_token is not null
+    #   and id in (select user_id from pods_users where pod_id = #{pod_id})
+    #   and id != #{user_id}
+    # "
+    
+    receivers = ActiveRecord::Base.connection.execute(queryreceivers)
+    # Do not send push if you are the only user
+    # or if other users have no token
+    if !receivers.nil?
+      receivers.each(:as => :hash) do |row|
+        
+        if message.length >= 30
+          message = message[0...30]+"..."
+        end
+        
+        if row['user_id'].nil?
+          User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
+        else
+          User.pushMessageToUser(row['user_id'],message,{:hashid=>hashid},1)
+        end
+      end
+    end
+    
 
-    return response
+    return nil
   end
 
   

@@ -15,8 +15,12 @@ class ApplicationController < ActionController::Base
   
   def authenticate_token
     
-    @current_user = User.first
-    
+    #  authenticate current user
+    if params[:access_token].nil?
+      @current_user = User.first
+    else
+      @current_user = User.find_by_access_token(params[:access_token])
+    end
     #  # authenticate current user
     #  if !params[:access_token].nil?
     #    @current_user = User.find_by_id(params[:access_token])
