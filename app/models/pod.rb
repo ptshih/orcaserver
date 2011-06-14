@@ -110,8 +110,20 @@ class Pod < ActiveRecord::Base
       SET p.last_message_id = m.id, p.created_at = m.created_at
       WHERE p=#{pod_id}
     "
+    qresult = ActiveRecord::Base.connection.execute(query)
     
-    User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
+    queryreceivers = "
+      select user_id from pods_users where pod_id = #{pod_id} and device_token is not null limit 3
+    "
+    receivers = ActiveRecord::Base.connection.execute(queryreceivers)
+    qresult.each(:as => :hash) do |row|
+      if row['user_id'].nil?
+        User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
+      else
+        User.pushMessageToUser(row['user_id'],message,{:hashid=>hashid},1)
+      end
+    end
+    
 
     return response
   end
