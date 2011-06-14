@@ -85,7 +85,7 @@ class Pod < ActiveRecord::Base
 
     qresult = ActiveRecord::Base.connection.execute(query)
     
-    return response
+    return nil
   end
   
   def self.async_create_message(pod_id, user_id, hashid, message)
@@ -129,7 +129,7 @@ class Pod < ActiveRecord::Base
     end
     
 
-    return response
+    return nil
   end
 
   
