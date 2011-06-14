@@ -118,15 +118,24 @@ class Pod < ActiveRecord::Base
       where map.pod_id = #{pod_id}
         and u.device_token is not null
         and map.user_id != #{user_id}
+        
     "
+    queryreceivers = "
+      select distinct device_token
+      from users
+      where device_token is not null
+      and id in (select user_id from pods_users where pod_id = #{pod_id})
+      and id != #{user_id}
+    "
+    
     receivers = ActiveRecord::Base.connection.execute(queryreceivers)
     # Do not send push if you are the only user
     # or if other users have no token
     if !receivers.nil?
       receivers.each(:as => :hash) do |row|
         
-        if message.length >= 100
-          message = message[0...10]+"..."
+        if message.length >= 30
+          message = message[0...30]+"..."
         end
         
         if row['user_id'].nil?
