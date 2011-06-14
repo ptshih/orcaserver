@@ -118,7 +118,6 @@ class Pod < ActiveRecord::Base
       where map.pod_id = #{pod_id}
         and u.device_token is not null
         and map.user_id != #{user_id}
-      limit 5
     "
     receivers = ActiveRecord::Base.connection.execute(queryreceivers)
     # Do not send push if you are the only user
