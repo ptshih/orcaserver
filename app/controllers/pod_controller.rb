@@ -57,7 +57,7 @@ class PodController < ApplicationController
           :id => message['id'].to_s,
           :podId => message['pod_id'].to_s,
           :sequence => message['hashid'],
-          :fromId => message['userid'],
+          :fromId => message['userid'].to_s,
           :fromName => message['full_name'],
           :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
           :message => message['message'],

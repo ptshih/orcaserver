@@ -188,7 +188,7 @@ class LoginController < ApplicationController
         # puts "\n\n======\n\nPrinting raw response: #{response.body}\n\n=======\n\n"
 
         # parse the json response
-        parsed_response = self.parse_json(response.body)
+        parsed_response = JSON.parse_json(response.body)
 
         # read generic error
         if (!parsed_response["error_code"].nil?) || (!parsed_response["error_msg"].nil?)
