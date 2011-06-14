@@ -113,7 +113,7 @@ class Pod < ActiveRecord::Base
     qresult = ActiveRecord::Base.connection.execute(query)
     
     queryreceivers = "
-      select user_id from pods_users map
+      select distinct user_id from pods_users map
       join users u on u.id = map.user_id
       where map.pod_id = #{pod_id}
         and u.device_token is not null
@@ -124,6 +124,11 @@ class Pod < ActiveRecord::Base
     # or if other users have no token
     if !receivers.nil?
       receivers.each(:as => :hash) do |row|
+        
+        if message.length >= 100
+          message = message[0...97]+"..."
+        end
+        
         if row['user_id'].nil?
           User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
         else
