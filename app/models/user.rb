@@ -1,13 +1,11 @@
 require 'OrcaWorker'
-require 'apn.rb'
 
 class User < ActiveRecord::Base
   @queue = :pushQueue
   
-  def self.pushMessage(user_id,token,message,json,badge)
-    # unscalable way for now...
-    OrcaAPN.new.push(token,message,json,badge)
-  end
+  # def self.pushMessage(user_id,token,message,json,badge)
+  #   pushToiOSDevice(token,message,json,badge)
+  # end
 
   def self.pushMessageToUser(user_id,message,json,badge)
     token = User.find(user_id)['device_token']

@@ -1,3 +1,4 @@
-orcaredis: cd resque; rake redis:start
-ocraworkers: COUNT=10 RAILS_ENV=production QUEUE=* bundle exec rake environment resque:work
+orcaredis: cd /home/bitnami/orcapods/resque; rake redis:start
+ocraworkers: RAILS_ENV=production QUEUE=orcaworker INTERVAL=1 bundle exec rake environment resque:work
+orcapushworker: cd /home/bitnami/orcapods/; ruby lib/apn.rb;
 resque_web: bundle exec resque-web --foreground --port 8000 --no-launch
