@@ -16,6 +16,15 @@ class User < ActiveRecord::Base
     end
   end
   
+  def set_joined_at
+      now_time = Time.now.utc.to_s(:db)
+      query = " update users
+                set joined_at = '#{now_time}'
+                where facebook_id = #{self.facebook_id} and joined_at is null
+              "
+      mysqlresult = ActiveRecord::Base.connection.execute(query)
+  end
+  
   # def initialize(facebook_id)
   #   
   #   query = "

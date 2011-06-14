@@ -18,7 +18,7 @@ class PodController < ApplicationController
       response << {
         :id => pod['id'].to_s,
         :name => pod['name'],
-        :fromId => pod['userid'],
+        :fromId => pod['userid'].to_s,
         :fromName => pod['full_name'],
         :fromPictureUrl => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
         :message => pod['message'],

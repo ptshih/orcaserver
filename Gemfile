@@ -4,6 +4,8 @@ gem 'rails', '3.0.8'
 gem 'sequel'
 gem 'json'
 gem 'mysql2'
+gem 'typhoeus'
+gem 'json'
 
 # gem 'sinatra', '1.1.0'
 # gem 'thin', '1.2.7'
