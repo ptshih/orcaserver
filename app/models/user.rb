@@ -2,15 +2,14 @@ require 'OrcaWorker'
 
 class User < ActiveRecord::Base
   @queue = :pushQueue
-  
-  # def self.pushMessage(user_id,token,message,json,badge)
-  #   pushToiOSDevice(token,message,json,badge)
-  # end
 
+  # this writes a job into the orca workers box
   def self.pushMessageToUser(user_id,message,json,badge)
     token = User.find(user_id)['device_token']
     if token
       User.async(:pushMessage,user_id,token,message,json,badge)
+    else
+      Rails.logger.info "tried to send push to a user without token userid #{user_id}"
     end
   end
   

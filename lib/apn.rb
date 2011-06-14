@@ -36,19 +36,27 @@ class OrcaAPN
 end
 # {"class"=>"User", "args"=>["pushMessage", 391, "1d2301b234494ed1df0b6bfc848840543b5fa45afec8f402a7b7a493b8195464", "yo what is up", {"struct"=>[1, 2, 3]}, 1]}
 
+# 10 msgs, twice a second ~ 20msg/sec for 1 worker 
+# 1,728,000 msg/day 
+
 $apn = OrcaAPN.new
 while(true)
+  job = nil
   begin
-    job = Resque.pop('pushQueue')
-    if job 
-      puts job.inspect
-      args = job['args']
-      $apn.push(args[2],args[3],args[4],args[5])
-    else
-      # puts 'no job. looping'
+    10.times do 
+      job = Resque.pop('pushQueue')
+      if job 
+        puts job.inspect
+        args = job['args']
+        $apn.push(args[2],args[3],args[4],args[5])
+      else
+        break
+      end
     end
   rescue => e
     puts e
+    # put job back on queue while apns reconnects
+    job.recreate
   end
   sleep 0.5
 end
