@@ -68,7 +68,7 @@ class Pod < ActiveRecord::Base
     
     query = "
       INSERT INTO pods (name, hashid created_at, updated_at)
-      VALUES (\'#{name}\', \'#{hashid}\', now(), now())
+      VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
     "
 
     # insert_response = @DB[query]
@@ -97,7 +97,7 @@ class Pod < ActiveRecord::Base
 
     query = "
       INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
-            VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message}\', now(), now())
+            VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
     "
     
     # insert_response = @DB[query]
