@@ -10,8 +10,8 @@ class LoginController < ApplicationController
     @@james_id = 645750651
     @@tom_id = 480460
     @@fb_host = 'https://graph.facebook.com'
-    @@fb_app_id = '132514440148709'
-    @@fb_app_secret = '925b0a280e685631acf466dfea13b154'
+    @@fb_app_id = '147806651932979'
+    @@fb_app_secret = '587e59801ee014c9fdea54ad17e626c6'
     @@fb_app_access_token = "132514440148709%257Cf09dd88ba268a8727e4f3fd5-645750651%257Ck21j0yXPGxYGbJPd0eOEMTy5ZN4"
     
   end
@@ -30,7 +30,7 @@ class LoginController < ApplicationController
     return true
   end
   
-  # This API registers a new first time User from a client
+  # API registers a new first time User from a client
   # Receives a POST with facebook_access_token from the user
   #   :facebook_access_token
   #   :facebook_id
@@ -66,34 +66,53 @@ class LoginController < ApplicationController
       format.json  { render :json => session_response_hash.to_json }
     end
   end
-  
-  def registerpushdevice
+
+
+  # API for registering a user's device for pushing
+  # :access_token
+  # :device_token
+  def registerpush
+    response = {:success => "false"}
+    @current_user = User.find_by_access_token(params[:access_token])
+    if @current_user.nil?
+      response = {:success => "false"}
+    else
+      @current_user.update_attribute('device_token', params[:device_token].to_s)
+      response = {:success => "true"}
+    end
     
-    
+    respond_to do |format|
+      format.xml  { render :xml => response.to_xml }
+      format.json  { render :json => response.to_json }
+    end
     
   end
   
   # This API registers a new session from a client
   # Receives a GET with access_token from the user
   # This will fire since calls for the current user
+  # http://localhost:3000/v1/session?access_token=9567517e6574115fbb23db2753dce581c6f3df08e60251bd7693236158c6801a432ed65d072b3487eb78107bf425a1de2025ad0e08e7da8e1381a2a2bcb2e6f9
   def session
     @current_user = User.find_by_access_token(params[:access_token])
-    @facebook_api = API::FacebookApi.new(@current_user.facebook_access_token)
-    
+        
     # Fetch content for current user
-    find_friends_for_current_user
+    find_friends_for_facebook_id(@current_user.facebook_id, since = nil)
     
     # return new friends
     # We want to send the entire friendslist hash of id, name to the client
-    friend_array = Friendship.find(:all, :select=>"friend_id, friend_name", :conditions=>"user_id = #{@current_user.id}").map {|f| {:friend_id=>f.friend_id.to_i, :friend_name=>f.friend_name}}
-    friend_id_array = friend_array.map  do |f| f[:friend_id] end
-      
-    # The response should include the current user ID and name for the client to cache
+    # friend_array = Friendship.find(:all, :select=>"friend_id, friend_name", :conditions=>"user_id = #{@current_user.id}").map {|f| {:friend_id=>f.friend_id.to_i, :friend_name=>f.friend_name}}
+    # friend_id_array = friend_array.map  do |f| f[:friend_id] end
+    #   
+    # # The response should include the current user ID and name for the client to cache
+    # session_response_hash = {
+    #   :access_token => @current_user.access_token,
+    #   :facebook_id => @current_user.facebook_id,
+    #   :name => @current_user.name,
+    #   :friends => friend_array
+    # }
+    
     session_response_hash = {
-      :access_token => @current_user.access_token,
-      :facebook_id => @current_user.facebook_id,
-      :name => @current_user.name,
-      :friends => friend_array
+      :access_token => @current_user.access_token
     }
 
     respond_to do |format|
@@ -114,7 +133,7 @@ class LoginController < ApplicationController
     headers_hash['Accept'] = 'application/json'
 
     params_hash = Hash.new
-    params_hash['access_token'] = @fb_app_access_token
+    params_hash['access_token'] = @current_user.facebook_access_token
     params_hash['fields'] = 'third_party_id,first_name,last_name,name,gender,locale'
 
     if !since.nil? then
