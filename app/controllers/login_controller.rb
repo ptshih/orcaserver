@@ -41,6 +41,9 @@ class LoginController < ApplicationController
       @current_user.set_joined_at
     end
     
+    # Adding everyone to party pod where pod_id=1
+    @current_user.add_to_party_pod
+    
     # Fetch friends for current user
     # find_friends_for_facebook_id(@current_user.facebook_id, nil)
     

@@ -23,6 +23,14 @@ class User < ActiveRecord::Base
       mysqlresult = ActiveRecord::Base.connection.execute(query)
   end
   
+  def add_to_party_pod
+    
+    query = " insert ignore into pods_users
+              select #{self.id}, 1"
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+    
+  end
+  
   # def initialize(facebook_id)
   #   
   #   query = "
