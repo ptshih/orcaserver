@@ -121,11 +121,15 @@ class Pod < ActiveRecord::Base
       limit 5
     "
     receivers = ActiveRecord::Base.connection.execute(queryreceivers)
-    qresult.each(:as => :hash) do |row|
-      if row['user_id'].nil?
-        User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
-      else
-        User.pushMessageToUser(row['user_id'],message,{:hashid=>hashid},1)
+    # Do not send push if you are the only user
+    # or if other users have no token
+    if !receivers.nil?
+      receivers.each(:as => :hash) do |row|
+        if row['user_id'].nil?
+          User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
+        else
+          User.pushMessageToUser(row['user_id'],message,{:hashid=>hashid},1)
+        end
       end
     end
     
