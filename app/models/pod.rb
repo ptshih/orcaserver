@@ -126,7 +126,7 @@ class Pod < ActiveRecord::Base
       receivers.each(:as => :hash) do |row|
         
         if message.length >= 100
-          message = message[0...97]+"..."
+          message = message[0...10]+"..."
         end
         
         if row['user_id'].nil?
