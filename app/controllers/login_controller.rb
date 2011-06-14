@@ -56,7 +56,7 @@ class LoginController < ApplicationController
     end
     
     # Fetch friends for current user
-    find_friends_for_facebook_id(@current_user.facebook_id, nil)
+    # find_friends_for_facebook_id(@current_user.facebook_id, nil)
     
     # The response only local access_token    
     session_response_hash = {:access_token => @current_user.access_token}
@@ -71,6 +71,7 @@ class LoginController < ApplicationController
   # API for registering a user's device for pushing
   # :access_token
   # :device_token
+  # http://orcapods.heroku.com/v1/registerpush?access_token=893d80135f5128349a89a4915be15fd442cc6e4c3dd63e7bedc1213645cb554827a774fddaac4918e19ad0511f026de7671d22f101033dbbb61062ba0e168377
   def registerpush
     response = {:success => "false"}
     @current_user = User.find_by_access_token(params[:access_token])
