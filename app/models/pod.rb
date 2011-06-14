@@ -120,13 +120,13 @@ class Pod < ActiveRecord::Base
         and map.user_id != #{user_id}
         
     "
-    queryreceivers = "
-      select distinct device_token
-      from users
-      where device_token is not null
-      and id in (select user_id from pods_users where pod_id = #{pod_id})
-      and id != #{user_id}
-    "
+    # queryreceivers = "
+    #   select distinct device_token
+    #   from users
+    #   where device_token is not null
+    #   and id in (select user_id from pods_users where pod_id = #{pod_id})
+    #   and id != #{user_id}
+    # "
     
     receivers = ActiveRecord::Base.connection.execute(queryreceivers)
     # Do not send push if you are the only user
