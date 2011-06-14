@@ -114,8 +114,10 @@ class PodController < ApplicationController
 
     params[:message] += " from user #{@current_user.id}"
     
+    current_user_name = @current_user.first_name + " " + @current_user.last_name[0]
+    
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], @current_user.id, params[:sequence], params[:message])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, current_user_name, params[:sequence], params[:message])
     # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}

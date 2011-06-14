@@ -89,11 +89,11 @@ class Pod < ActiveRecord::Base
   end
   
   def self.async_create_message(pod_id, user_id, hashid, message)
-    Pod.async(:create_message,pod_id, user_id, hashid, message)
+    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message)
     return ""
   end
   
-  def self.create_message(pod_id, user_id, hashid, message)
+  def self.create_message(pod_id, user_id, current_user_name, hashid, message)
 
     query = "
       INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
@@ -133,7 +133,7 @@ class Pod < ActiveRecord::Base
     # or if other users have no token
     if !receivers.nil?
       receivers.each(:as => :hash) do |row|
-        
+        message = current_user_name + ": "+ message
         if message.length >= 30
           message = message[0...30]+"..."
         end
