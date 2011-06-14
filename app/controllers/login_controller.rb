@@ -67,6 +67,12 @@ class LoginController < ApplicationController
     end
   end
   
+  def registerpushdevice
+    
+    
+    
+  end
+  
   # This API registers a new session from a client
   # Receives a GET with access_token from the user
   # This will fire since calls for the current user
