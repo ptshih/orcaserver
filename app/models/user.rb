@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
 
   end
   
-  def mute_pod
+  def mute_pod(pod_id)
     
     now_time = Time.now.utc.to_s(:db)
     # Mute 8 hours later

@@ -111,14 +111,15 @@ class Pod < ActiveRecord::Base
       WHERE p.id=#{pod_id}
     "
     qresult = ActiveRecord::Base.connection.execute(query)
-    
+    now_time = Time.now.utc.to_s(:db)
     queryreceivers = "
-      select distinct user_id from pods_users map
+      select distinct user_id
+      from pods_users map
       join users u on u.id = map.user_id
       where map.pod_id = #{pod_id}
         and u.device_token is not null
         and map.user_id != #{user_id}
-        
+        and (map.mute_until is null or map.mute_until<='#{now_time}'
     "
     # queryreceivers = "
     #   select distinct device_token
