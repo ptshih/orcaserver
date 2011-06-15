@@ -23,7 +23,8 @@ class OrcaAPN
     @sock.close
   end
   def push(token,message,json,badge)
-      payload = {"aps" => {"alert" => message, "badge" => badge, "sound" => 'default'},'message'=>json.to_json}
+      # "badge" => badge,
+      payload = {"aps" => {"alert" => message, "sound" => 'default'},'message'=>json.to_json}
       json = payload.to_json()
       token =  [token.delete(' ')].pack('H*')
     begin

@@ -147,9 +147,9 @@ class Pod < ActiveRecord::Base
         }
 
         if row['user_id'].nil?
-          User.pushMessageToUser(User.find_by_id(1),user_message,msg,1)
+          User.pushMessageToUser(User.find_by_id(1),user_message,msg,0)
         else
-          User.pushMessageToUser(row['user_id'],user_message,msg,1)
+          User.pushMessageToUser(row['user_id'],user_message,msg,0)
         end
       end
     end
