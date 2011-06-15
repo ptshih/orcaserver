@@ -20,23 +20,36 @@ class User < ActiveRecord::Base
                 where facebook_id = #{self.facebook_id} and joined_at is null
               "
       mysqlresult = ActiveRecord::Base.connection.execute(query)
-      
-      user = User.where(:facebook_id => "#{self.facebook_id}", :joined_at => "#{now_time}")
-      
-      if user.nil?
-        return false
-      end
-      return true
+
   end
   
   def add_to_party_pod
-    
+    pod_id = 1
     now_time = Time.now.utc.to_s(:db)
     query = " insert ignore into pods_users
               (user_id, pod_id, updated_at, created_at)
-              select #{self.id}, 1, '#{now_time}', '#{now_time}'"
+              select #{self.id}, #{pod_id}, '#{now_time}', '#{now_time}'"
     mysqlresult = ActiveRecord::Base.connection.execute(query)
     
+    query = " select * from pods_users where user_id = #{self.id} and created_at = '#{now_time}'"
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+    
+    if mysqlresult['Rows']>0
+      Pod.async_create_message(pod_id, self.id, self.get_short_name, params[:sequence], params[:message])
+    end
+    
+  end
+  
+  # "John Smith" becomes "John S"
+  def get_short_name
+    user_name = ""
+    if !self.first_name.nil?
+      user_name = self.first_name
+    end
+    if self.last_name.length>1
+      user_name = user_name + " " + self.last_name[0]
+    end
+    return user_name
   end
   
   # def initialize(facebook_id)

@@ -112,16 +112,9 @@ class PodController < ApplicationController
     if params[:sequence].nil?
       params[:sequence] = rand
     end
-    current_user_name = ""
-    if !@current_user.first_name.nil?
-      current_user_name = @current_user.first_name
-    end
-    if @current_user.last_name.length>1
-      current_user_name = @current_user.last_name[0]
-    end
     
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], @current_user.id, current_user_name, params[:sequence], params[:message])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message])
     # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}
