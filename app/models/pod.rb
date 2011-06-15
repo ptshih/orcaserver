@@ -119,7 +119,7 @@ class Pod < ActiveRecord::Base
       where map.pod_id = #{pod_id}
         and u.device_token is not null
         and map.user_id != #{user_id}
-        and (map.mute_until is null or map.mute_until<='#{now_time}'
+        and (map.mute_until is null or map.mute_until<='#{now_time}')
     "
     # queryreceivers = "
     #   select distinct device_token
