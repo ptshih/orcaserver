@@ -75,7 +75,7 @@ class Pod < ActiveRecord::Base
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     
-    newpod = self.find_by_hashid('#{hashid}')
+    newpod = Pod.find_by_hashid('#{hashid}')
     
     query = "
       INSERT INTO pods_users (pod_id, user_id)
