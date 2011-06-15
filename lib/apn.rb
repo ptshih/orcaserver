@@ -52,6 +52,7 @@ while(true)
       else
         break
       end
+      sleep 0.05
     end
   rescue => e
     puts e
