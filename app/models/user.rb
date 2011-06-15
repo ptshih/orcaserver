@@ -21,6 +21,24 @@ class User < ActiveRecord::Base
               "
       mysqlresult = ActiveRecord::Base.connection.execute(query)
 
+      # TODO: if new user has joined, alert friends via buddy list (not push)
+
+  end
+  
+  def mute_pod
+    
+    now_time = Time.now.utc.to_s(:db)
+    # Mute 8 hours later
+    mute_until = (Time.now.utc+60*60*8).to_s(:db)
+    query = "
+      update pods_users m
+      set mute_until = '#{mute_until}', updated_at = '#{now_time}'
+      where m.user_id = #{self.id} and m.pod_id = #{pod_id}
+    "
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+    
+    # TODO: if pod has been muted, send msg to pod from user notifying other's in the pod
+    
   end
   
   def add_to_party_pod
@@ -37,6 +55,8 @@ class User < ActiveRecord::Base
     mysqlresult.each(:as => :hash) do |row|
       rowcount=row['rows']
     end
+    
+    # when user has joined pod, add message to pod stating the join
     if rowcount>0
       message_sequence = SecureRandom.hex(64)
       joined_pod=Pod.find_by_id(pod_id)
@@ -57,42 +77,5 @@ class User < ActiveRecord::Base
     end
     return user_name
   end
-  
-  # def initialize(facebook_id)
-  #   
-  #   query = "
-  #     SELECT * FROM USERS WHERE facebook_id = #{facebook_id}
-  #   "
-  #   response = ActiveRecord::Base.connection.execute(query)
-  #   response.each(:as => :hash) do |row|
-  #     user = row
-  #   end
-  #   
-  #   return user
-  # end
-  # 
-  # def self.find_by_access_token(access_token)
-  #   query = "
-  #     SELECT * FROM USERS WHERE id = #{access_token}
-  #   "
-  #   response = ActiveRecord::Base.connection.execute(query)
-  #   user = nil
-  #   response.each(:as => :hash) do |row|
-  #     user = row
-  #   end
-  #   return user
-  # end
-  # 
-  # def create(facebook_id, facebook_accesstoken=nil, apns_token=nil, last_message_hashid=nil)
-  #   
-  #   query = "
-  #     INSERT INTO USERS (facebook_id)
-  #     VALUES(#{facebook_id})
-  #   "
-  #   response = ActiveRecord::Base.connection.execute(query)
-  #   
-  #   return User.initialize(facebook_id)
-  #   
-  # end
 
 end
