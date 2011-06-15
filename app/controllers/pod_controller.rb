@@ -79,6 +79,25 @@ class PodController < ApplicationController
     
   end
   
+  # Mute pod
+  # @param REQUIRED access_token
+  # @param REQUIRED pod_id
+  # http://localhost:3000/v1/pods/:id/mute
+  def mute_pod
+    
+    Rails.logger.info request.query_parameters.inspect
+    puts "params: #{params}"
+    
+    @current_user.mute_pod(params[:pod_id])
+    
+    response = {:success => "true"}
+    respond_to do |format|
+      format.xml  { render :xml => response }
+      format.json  { render :json => response }
+    end
+    
+  end
+  
   # Create new pod
   # @param REQUIRED access_token
   # @param REQUIRED name
