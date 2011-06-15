@@ -142,7 +142,7 @@ class Pod < ActiveRecord::Base
           :pod_id  => pod_id,
           :hashid  => hashid,
           :user_id => user_id,
-          :message => message
+          :updated_at => Time.now.to_i
         }
 
         if row['user_id'].nil?
