@@ -26,7 +26,8 @@ class PodController < ApplicationController
         :participants => 'participants',
         :lat => nil,
         :lng => nil,
-        :timestamp => pod['updated_at'].to_i
+        :timestamp => pod['updated_at'].to_i,
+        :logged_in_as => @current_user.full_name
       }
     end
     
@@ -112,8 +113,6 @@ class PodController < ApplicationController
       params[:sequence] = rand
     end
 
-    params[:message] += " from user #{@current_user.id}"
-    
     current_user_name = @current_user.first_name + " " + @current_user.last_name[0]
     
     # Change to use create_message_via_resque
