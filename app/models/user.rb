@@ -20,12 +20,16 @@ class User < ActiveRecord::Base
                 where facebook_id = #{self.facebook_id} and joined_at is null
               "
       mysqlresult = ActiveRecord::Base.connection.execute(query)
+
+
   end
   
   def add_to_party_pod
     
+    now_time = Time.now.utc.to_s(:db)
     query = " insert ignore into pods_users
-              select #{self.id}, 1"
+              (user_id, pod_id, updated_at, created_at)
+              select #{self.id}, 1, #{now_time}, #{now_time}"
     mysqlresult = ActiveRecord::Base.connection.execute(query)
     
   end

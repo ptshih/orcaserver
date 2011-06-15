@@ -107,7 +107,7 @@ class Pod < ActiveRecord::Base
     
     query = "
       UPDATE pods p, (select id, created_at from messages where hashid = \'#{hashid}\') m
-      SET p.last_message_id = m.id, p.updated_at = m.updated_at
+      SET p.last_message_id = m.id, p.updated_at = m.created_at
       WHERE p.id=#{pod_id}
     "
     qresult = ActiveRecord::Base.connection.execute(query)
@@ -132,10 +132,11 @@ class Pod < ActiveRecord::Base
     # Do not send push if you are the only user
     # or if other users have no token
     if !receivers.nil?
+      
       receivers.each(:as => :hash) do |row|
-        message = current_user_name + ": "+ message
-        if message.length >= 30
-          message = message[0...30]+"..."
+        user_message = current_user_name + ": "+ message
+        if user_message.length >= 30
+          user_message = user_message[0...30]+"..."
         end
         
         msg = {
@@ -146,9 +147,9 @@ class Pod < ActiveRecord::Base
         }
 
         if row['user_id'].nil?
-          User.pushMessageToUser(User.first.id,message,msg,1)
+          User.pushMessageToUser(User.find_by_id(1),user_message,msg,1)
         else
-          User.pushMessageToUser(row['user_id'],message,msg,1)
+          User.pushMessageToUser(row['user_id'],user_message,msg,1)
         end
       end
     end
