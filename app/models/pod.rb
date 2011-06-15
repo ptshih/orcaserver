@@ -138,10 +138,17 @@ class Pod < ActiveRecord::Base
           message = message[0...30]+"..."
         end
         
+        msg = {
+          :pod_id  => pod_id,
+          :hashid  => hashid,
+          :user_id => user_id,
+          :message => message
+        }
+
         if row['user_id'].nil?
-          User.pushMessageToUser(User.first.id,message,{:hashid=>hashid},1)
+          User.pushMessageToUser(User.first.id,message,msg,1)
         else
-          User.pushMessageToUser(row['user_id'],message,{:hashid=>hashid},1)
+          User.pushMessageToUser(row['user_id'],message,msg,1)
         end
       end
     end
