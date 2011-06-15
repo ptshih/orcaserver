@@ -33,9 +33,12 @@ class User < ActiveRecord::Base
     
     query = " select * from pods_users where user_id = #{self.id} and created_at = '#{now_time}'"
     mysqlresult = ActiveRecord::Base.connection.execute(query)
-    
+
     if mysqlresult['Rows']>0
-      Pod.async_create_message(pod_id, self.id, self.get_short_name, params[:sequence], params[:message])
+      message_sequence = SecureRandom.hex(64)
+      joined_pod=Pod.find_by_id(pod_id)
+      message = " joined pod #{joined_pod.name}"
+      Pod.async_create_message(pod_id, self.id, self.get_short_name, message_sequence, message)
     end
     
   end
