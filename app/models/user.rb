@@ -33,8 +33,11 @@ class User < ActiveRecord::Base
     
     query = " select count(*) as rows from pods_users where user_id = #{self.id} and created_at = '#{now_time}'"
     mysqlresult = ActiveRecord::Base.connection.execute(query)
-
-    if mysqlresult['rows']>0
+    rowcount=0
+    mysqlresult.each(:as => :hash) do |row|
+      rowcount=row['rows']
+    end
+    if rowcount>0
       message_sequence = SecureRandom.hex(64)
       joined_pod=Pod.find_by_id(pod_id)
       message = " joined pod #{joined_pod.name}"
