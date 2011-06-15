@@ -70,7 +70,7 @@ class Pod < ActiveRecord::Base
   def self.create(user_id, hashid, name)
     
     query = "
-      INSERT INTO pods (name, hashid created_at, updated_at)
+      INSERT INTO pods (name, hashid, created_at, updated_at)
       VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
     "
     qresult = ActiveRecord::Base.connection.execute(query)
