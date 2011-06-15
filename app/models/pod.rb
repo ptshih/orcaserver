@@ -88,7 +88,7 @@ class Pod < ActiveRecord::Base
     return nil
   end
   
-  def self.async_create_message(pod_id, user_id, hashid, message)
+  def self.async_create_message(pod_id, user_id, current_user_name, hashid, message)
     Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message)
     return ""
   end
