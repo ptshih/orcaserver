@@ -11,8 +11,9 @@ Orcapods::Application.routes.draw do
   match ':version/pods/:pod_id/messages', :controller => 'pod', :action => 'message_index', :via => :get # get list of messages
 
   # Writes
-  match ':version/pods/create', :controller => 'pod', :action =>'new', :via => ["get","post"] 
+  match ':version/pods/create', :controller => 'pod', :action =>'new', :via => ["get","post"]
   match ':version/pods/:pod_id/messages/create', :controller => 'pod', :action =>'message_new', :via => ["get","post"]
+  match ':version/pods/:pod_id/mute', :controller => 'pod', :action =>'mute_pod', :via => ["get","post"]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
