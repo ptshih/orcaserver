@@ -28,7 +28,7 @@ class Pod < ActiveRecord::Base
   def self.index(user_id)
     response_array = []
     query = "
-      SELECT p.id, p.name, m.message, u.id as userid, u.facebook_id, u.full_name, p.updated_at
+      SELECT p.id, p.name, m.message, m.hashid, u.id as userid, u.facebook_id, u.full_name, p.updated_at
       FROM pods p
       JOIN messages m on p.last_message_id = m.id
       JOIN users u on u.id = m.user_id
@@ -64,28 +64,31 @@ class Pod < ActiveRecord::Base
   end
 
 
+  # Create pod
+  # Insert user to pods_users map
+  # Create first message of pod
   def self.create(user_id, hashid, name)
     
     query = "
-      INSERT INTO pods (name, hashid created_at, updated_at)
+      INSERT INTO pods (name, hashid, created_at, updated_at)
       VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
     "
-
-    # insert_response = @DB[query]
-    # response = "Created the pod with id = #{insert_response.insert.to_s}"
-
-    qresult = ActiveRecord::Base.connection.execute(query)
-
-    query = "
-      INSERT INTO pods_users (pod_id, user_id)
-      SELECT id, #{user_id.to_i} FROM pods WHERE hashid=#{hashid})
-    "
-
-    # insert_response = @DB[query]
-
     qresult = ActiveRecord::Base.connection.execute(query)
     
-    return nil
+    newpod = Pod.find_by_hashid('#{hashid}')
+    
+    query = "
+      INSERT INTO pods_users (pod_id, user_id)
+      SELECT #{newpod.id}, #{user_id.to_i}
+    "
+    qresult = ActiveRecord::Base.connection.execute(query)
+
+    message = "created pod"
+    send_name = newpod.name
+    async_create_message(newpod_id, user_id, send_name, hashid, message)
+    
+    return newpod
+
   end
   
   def self.async_create_message(pod_id, user_id, current_user_name, hashid, message)
@@ -111,14 +114,15 @@ class Pod < ActiveRecord::Base
       WHERE p.id=#{pod_id}
     "
     qresult = ActiveRecord::Base.connection.execute(query)
-    
+    now_time = Time.now.utc.to_s(:db)
     queryreceivers = "
-      select distinct user_id from pods_users map
+      select distinct user_id
+      from pods_users map
       join users u on u.id = map.user_id
       where map.pod_id = #{pod_id}
         and u.device_token is not null
         and map.user_id != #{user_id}
-        
+        and (map.mute_until is null or map.mute_until<='#{now_time}')
     "
     # queryreceivers = "
     #   select distinct device_token

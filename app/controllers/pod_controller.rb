@@ -23,6 +23,7 @@ class PodController < ApplicationController
         :fromName => pod['full_name'],
         :fromPictureUrl => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
         :message => pod['message'],
+        :sequence => pod['hashid'],
         :participants => 'participants',
         :lat => nil,
         :lng => nil,
@@ -79,16 +80,40 @@ class PodController < ApplicationController
     
   end
   
+  # Mute pod
+  # @param REQUIRED access_token
+  # @param REQUIRED pod_id
+  # http://localhost:3000/v1/pods/:id/mute
+  def mute_pod
+    
+    Rails.logger.info request.query_parameters.inspect
+    puts "params: #{params}"
+    
+    @current_user.mute_pod(params[:pod_id])
+    
+    response = {:success => "true"}
+    respond_to do |format|
+      format.xml  { render :xml => response }
+      format.json  { render :json => response }
+    end
+    
+  end
+  
   # Create new pod
   # @param REQUIRED access_token
   # @param REQUIRED name
   # http://localhost:3000/v1/pods/create?name=pod123&access_token=1
+  # http://orcapods.heroku.com/v1/pods/create?name=TestCreatePod&access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
   def new
     
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    response = Pod.create(@current_user.id, params[:name])
+    if params[:sequence].nil?
+      params[:sequence] = SecureRandom.hex(64)
+    end
+    
+    response = Pod.create(@current_user.id, params[:sequence], params[:name])
     
     response = {:success => "true"}
     respond_to do |format|
@@ -110,18 +135,11 @@ class PodController < ApplicationController
     puts "params: #{params}"
     
     if params[:sequence].nil?
-      params[:sequence] = rand
-    end
-    current_user_name = ""
-    if !@current_user.first_name.nil?
-      current_user_name = @current_user.first_name
-    end
-    if @current_user.last_name.length>1
-      current_user_name = @current_user.last_name[0]
+      params[:sequence] = SecureRandom.hex(64)
     end
     
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], @current_user.id, current_user_name, params[:sequence], params[:message])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message])
     # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
     
     response = {:success => "True: "+response}
