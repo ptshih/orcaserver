@@ -3,6 +3,15 @@ require "socket"
 require 'json'
 require 'benchmark'
 require 'resque'
+require 'logger'
+
+$logger = Logger.new('/home/bitnami/log/orcapush.log') rescue nil
+
+$logger.datetime_format = "%Y-%m-%d %H:%M:%S"
+
+def log(o)
+  $logger.info(o)
+end
 
 class OrcaAPN
   def initialize
@@ -13,7 +22,7 @@ class OrcaAPN
     reconnect
   end
   def reconnect
-    puts 'connecting to gateway.sandbox.push.apple.com:2195'
+    log 'connecting to gateway.sandbox.push.apple.com:2195'
     @sock = TCPSocket.new('gateway.sandbox.push.apple.com', 2195) #development gateway
     @ssl = OpenSSL::SSL::SSLSocket.new(@sock, @ctx)
     @ssl.connect
@@ -30,6 +39,7 @@ class OrcaAPN
     begin
       @ssl.write("\0\0 #{token}\0#{json.length.chr}#{json}")
     rescue => e
+      log e
       reconnect
       raise e
     end
@@ -47,7 +57,7 @@ while(true)
     10.times do 
       job = Resque.pop('pushQueue')
       if job 
-        puts job.inspect
+        log job.inspect
         args = job['args']
         $apn.push(args[2],args[3],args[4],args[5])
       else
@@ -56,7 +66,7 @@ while(true)
       # sleep 0.05
     end
   rescue => e
-    puts e
+    log e
     # put job back on queue while apns reconnects
     job.recreate
   end
