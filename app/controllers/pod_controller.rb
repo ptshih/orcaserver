@@ -147,6 +147,8 @@ class PodController < ApplicationController
   # @param OPTIONAL photo_width
   # @param OPTIONAL photo_height
   # @param OPTIONAL metadata
+  # @param OPTIONAL lat
+  # @param OPTIONAL lng
   # http://localhost:3000/v1/pods/13/messages/create?message=helloworld832h4&access_token=
   def message_new
     
@@ -158,8 +160,8 @@ class PodController < ApplicationController
     end
     
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:has_photo], params[:metadata])
-    #response = Pod.create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:has_photo], params[:metadata])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:has_photo], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
+    #response = Pod.create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:has_photo], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
     
     response = {:success => "True: "+response}
     respond_to do |format|

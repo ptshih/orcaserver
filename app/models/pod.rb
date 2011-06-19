@@ -121,12 +121,17 @@ class Pod < ActiveRecord::Base
   # 
   # end
   
-  def self.async_create_message(pod_id, user_id, current_user_name, hashid, message, has_photo=nil, metadata=nil)
-    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message, has_photo, metadata)
+  
+  # params[:has_photo], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
+  def self.async_create_message(pod_id, user_id, current_user_name, hashid, message,
+      has_photo=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
+    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message, has_photo,
+      photo_width, photo_height, metadata, lat, lng)
     return ""
   end
   
-  def self.create_message(pod_id, user_id, current_user_name, hashid, message, has_photo=nil, metadata=nil)
+  def self.create_message(pod_id, user_id, current_user_name, hashid, message,
+      has_photo=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
 
     created_at = Time.now.utc.to_s(:db)
     updated_at = Time.now.utc.to_s(:db)    
