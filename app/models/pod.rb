@@ -108,16 +108,17 @@ class Pod < ActiveRecord::Base
     # "
     query = "
       INSERT INTO messages (pod_id, user_id, hashid, message, has_photo, metadata, created_at, updated_at)
-      VALUES (?, ?, ?, ?, now(), now())
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     "
     query = sanitize_sql_array([query, pod_id, user_id, hashid, message, has_photo, metadata, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "
-      UPDATE pods p, (select id, created_at from messages where hashid = \'#{hashid}\') m
+      UPDATE pods p, (select id, created_at from messages where hashid = ?) m
       SET p.last_message_id = m.id, p.updated_at = m.created_at
-      WHERE p.id=#{pod_id}
+      WHERE p.id=?
     "
+    query = sanitize_sql_array([query, hashid, pod_id])
     qresult = ActiveRecord::Base.connection.execute(query)
     now_time = Time.now.utc.to_s(:db)
     queryreceivers = "
@@ -129,14 +130,6 @@ class Pod < ActiveRecord::Base
         and map.user_id != #{user_id}
         and (map.mute_until is null or map.mute_until<='#{now_time}')
     "
-    # queryreceivers = "
-    #   select distinct device_token
-    #   from users
-    #   where device_token is not null
-    #   and id in (select user_id from pods_users where pod_id = #{pod_id})
-    #   and id != #{user_id}
-    # "
-    
     receivers = ActiveRecord::Base.connection.execute(queryreceivers)
     # Do not send push if you are the only user
     # or if other users have no token
@@ -162,9 +155,8 @@ class Pod < ActiveRecord::Base
         end
       end
     end
-    
 
-    return nil
+    return ""
   end
 
   # Add the user to pods_users mapping
