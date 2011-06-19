@@ -1,0 +1,38 @@
+<!-- pod list page -->
+<div data-role="page" id="podlist" data-theme="b" >
+	
+  <div data-role="header" data-position="inline" data-backbtn="false" id="header">
+	<h1>Pods</h1>
+  </div>
+
+  <div data-role="content" id="content">
+	
+	<%= @response_hash %>
+	<a href="messages.html" class="messageunit">
+	<!-- make div a link replace above div with a href -->
+	  <div class="messageavatar">
+		<img src="../images/userpics/1.jpg">
+	  </div>
+	  <div class="message">
+		<span1><!--<%= t[:name] %></span1><br>
+		<span2><%= t[:participants] %></span2>
+	  </div>
+	  <div class="messagetimestamp">
+		<span1><%= t[:timestamp] %>--></span1>
+	  </div>
+	</a>
+	<% end %>
+	
+  </div><!-- messagecontent -->
+
+  <div data-role="footer">
+	<div class="footerwrapper">
+	  <ul>
+		<li><a href="http://localhost:3000" rel="external">Full Site</a></center>
+		<li>Help
+		<li>About
+	  </ul>
+	</div>
+  </div>
+
+</div>

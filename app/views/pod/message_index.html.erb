@@ -1,0 +1,46 @@
+<!-- pod messages page -->
+<div data-role="page" id="messagelist" data-theme="b">
+	
+  <div data-role="header" id="header">
+	<a href="jqm-demo.html" data-rel="back" data-icon="arrow-l" data-role="button" data-transition="slide" data-direction="reverse">Pods</a>
+	<h1>[Pod Name]</h1>
+	
+	<div class="formwrapper">
+	  <form id="newcomment">
+	    <textarea name="commentpost" id="commentpost" placeholder="Send a message..." data-role="none" class="round-all"></textarea>
+		<div class="submitbtn"><button data-role="button" data-icon="check" id="submit" type="submit" data-theme="g">Send</button></div>
+		<script>$(function(){$('#commentpost').autoresize();});</script>
+	  </form>
+	</div>
+	
+  </div>
+
+  <div data-role="content" id="content">
+
+	<div class="messageunit">
+	<!-- make div a link replace above div with a href -->
+	  <div class="messageavatar">
+		<img src="../images/userpics/1.jpg">
+	  </div>
+	  <div class="message">
+		<span1>[Message Author]</span1><br>
+		<span3>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</span3>
+	  </div>
+	  <div class="messagetimestamp">
+		<span1>5hr</span1>
+	  </div>
+	</div>
+	
+  </div><!-- messagecontent -->
+
+  <div data-role="footer">
+	<div class="footerwrapper">
+	  <ul>
+		<li><a href="http://localhost:3000" rel="external">Full Site</a></center>
+		<li>Help
+		<li>About
+	  </ul>
+	</div>
+  </div><!-- endfoot -->
+
+</div>
