@@ -42,9 +42,8 @@ class Pod < ActiveRecord::Base
       if participants_hash[row['pod_id']].nil?
         new_list = [row['first_name']]
         participants_hash[row['pod_id']] = new_list
-      elsif participants_hash[row['pod_id']].length<=4
-        participants_hash[row['pod_id']] << row['first_name']
       else
+        participants_hash[row['pod_id']] << row['first_name']
       end
     end 
     
@@ -60,7 +59,11 @@ class Pod < ActiveRecord::Base
     query = sanitize_sql_array([query, user_id])
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
-      row['participants'] = participants_hash[row['id']].join(',')
+      participants_string = participants_hash[row['id']][0..2].join(',')
+      if participants_hash[row['id']].length>3
+        participants_string = participants_string + " and #{participants_hash[row['id']].length-3} more"
+      end
+      row['participants'] = participants_string
       response_array << row
     end
     # @DB.fetch(query) do |row|
