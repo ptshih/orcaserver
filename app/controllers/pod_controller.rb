@@ -11,7 +11,7 @@ class PodController < ApplicationController
   # http://orcapods.heroku.com/v1/pods?access_token=ab20afcd5def3b0cbc5f5352b63da16491a5715f3a0fbfd32179a8d73930532739525ca2387af8f8256d2b47a90af056cc013ced3dad56805852efc8080578b9
   def index
     
-    response_hash = {}
+    @response_hash = {}
     
     resp = Pod.index(@current_user.id)
     response = []
@@ -32,12 +32,13 @@ class PodController < ApplicationController
       }
     end
     
-    response_hash['data'] = response
+    @response_hash['data'] = response
     
     # response = {:success => "true"}
     respond_to do |format|
+      format.html
       format.xml  { render :xml => response_hash }
-      format.json  { render :json => response_hash }
+      format.json  { render :json => @response_hash }
     end
     
   end
@@ -82,6 +83,7 @@ class PodController < ApplicationController
     response_hash['data'] = response
     
     respond_to do |format|
+      format.html
       format.xml  { render :xml => response_hash }
       format.json  { render :json => response_hash }
     end
