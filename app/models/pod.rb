@@ -100,8 +100,7 @@ class Pod < ActiveRecord::Base
   def self.create_message(pod_id, user_id, current_user_name, hashid, message, has_photo=nil, metadata=nil)
 
     created_at = Time.now.utc.to_s(:db)
-    updated_at = Time.now.utc.to_s(:db)
-    
+    updated_at = Time.now.utc.to_s(:db)    
     # query = "
     #   INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
     #         VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
@@ -160,8 +159,7 @@ class Pod < ActiveRecord::Base
   end
 
   # Add the user to pods_users mapping
-  # If user already part of pod, return false
-  # Else true
+  # If user already part of pod, return false, Else true
   def add_user_to_pod(user_id=nil)
     
     now_time = Time.now.utc.to_s(:db)
@@ -182,7 +180,7 @@ class Pod < ActiveRecord::Base
     # when user has joined pod, add message to pod stating the join
     if rowcount>0
       message_sequence = SecureRandom.hex(64)
-      message = " joined pod #{self.name}"
+      message = "joined pod #{self.name}"
       Pod.async_create_message(self.id, user_id, added_user.get_short_name, message_sequence, message)
       return true
     end

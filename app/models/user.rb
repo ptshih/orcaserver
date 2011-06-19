@@ -25,11 +25,11 @@ class User < ActiveRecord::Base
 
   end
   
-  def mute_pod(pod_id)
+  def mute_pod(pod_id, hours)
     
     now_time = Time.now.utc.to_s(:db)
-    # Mute 8 hours later
-    mute_until = (Time.now.utc+60*60*8).to_s(:db)
+    # Mute x hours later
+    mute_until = (Time.now.utc+60*60*hours).to_s(:db)
     query = "
       update pods_users m
       set mute_until = '#{mute_until}', updated_at = '#{now_time}'

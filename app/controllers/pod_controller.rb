@@ -83,13 +83,13 @@ class PodController < ApplicationController
   # Mute pod
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
-  # http://localhost:3000/v1/pods/:id/mute
+  # http://localhost:3000/v1/pods/:id/mute/:hours
   def mute_pod
     
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    @current_user.mute_pod(params[:pod_id])
+    @current_user.mute_pod(params[:pod_id], param[:hours])
     
     response = {:success => "true"}
     respond_to do |format|

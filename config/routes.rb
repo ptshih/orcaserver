@@ -16,7 +16,7 @@ Orcapods::Application.routes.draw do
   # Create message
   match ':version/pods/:pod_id/messages/create', :controller => 'pod', :action =>'message_new', :via => ["get","post"]
   # Mute pod
-  match ':version/pods/:pod_id/mute', :controller => 'pod', :action =>'mute_pod', :via => ["get","post"]
+  match ':version/pods/:pod_id/mute/:hours', :controller => 'pod', :action =>'mute_pod', :via => ["get","post"]
   # Add user to pod
   match ':version/pods/:pod_id/user/:user_id/add', :controller => 'pod', :action =>'add_user', :via => ["get","post"]
 
