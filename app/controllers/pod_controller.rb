@@ -23,9 +23,6 @@ class PodController < ApplicationController
         :fromName => pod['full_name'],
         :fromPictureUrl => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
         :message => pod['message'],
-        :attachmentUrl => nil,
-        :photoWidth => nil,
-        :photoHeight => nil,
         :sequence => pod['hashid'],
         :participants => pod['participants'],
         :lat => nil,
@@ -59,6 +56,11 @@ class PodController < ApplicationController
     
     response = []
     resp.each do |message|
+      
+      attachmentUrl = nil
+      if message['has_photo']==1
+        attachmentUrl = "http://s3.amazonaws.com/orcapods/#{message['hashid']}.jpg"
+      end
       response << {
           :id => message['id'].to_s,
           :podId => message['pod_id'].to_s,
@@ -67,6 +69,9 @@ class PodController < ApplicationController
           :fromName => message['full_name'],
           :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
           :message => message['message'],
+          :attachmentUrl => attachmentUrl,
+          :photoWidth => message['photo_width'],
+          :photoHeight => message['photo_height'],
           :lat => nil,
           :lng => nil,
           :timestamp => message['updated_at'].to_i
@@ -139,6 +144,8 @@ class PodController < ApplicationController
   # @param REQUIRED message_uuid
   # @param REQUIRED message
   # @param OPTIONAL has_photo
+  # @param OPTIONAL photo_width
+  # @param OPTIONAL photo_height
   # @param OPTIONAL metadata
   # http://localhost:3000/v1/pods/13/messages/create?message=helloworld832h4&access_token=
   def message_new
