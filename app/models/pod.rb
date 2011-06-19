@@ -76,7 +76,7 @@ class Pod < ActiveRecord::Base
     response_array = []
     query = "
         SELECT m.id, pod_id, hashid, u.id as userid, u.facebook_id, u.full_name,
-          m.message, m.has_photo, m.photo_width, m.photo_height, m.hashid,
+          m.message, m.attachment_url, m.photo_width, m.photo_height, m.hashid,
           m.updated_at
         FROM messages m
         join users u on u.id = m.user_id
@@ -137,16 +137,16 @@ class Pod < ActiveRecord::Base
   # end
   
   
-  # params[:has_photo], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
+  # params[:attachment_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
   def self.async_create_message(pod_id, user_id, current_user_name, hashid, message,
-      has_photo=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
-    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message, has_photo,
+      attachment_url=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
+    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message, attachment_url,
       photo_width, photo_height, metadata, lat, lng)
     return ""
   end
   
   def self.create_message(pod_id, user_id, current_user_name, hashid, message,
-      has_photo=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
+      attachment_url=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
 
     created_at = Time.now.utc.to_s(:db)
     updated_at = Time.now.utc.to_s(:db)    
@@ -155,11 +155,11 @@ class Pod < ActiveRecord::Base
     #         VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
     # "
     query = "
-      INSERT INTO messages (pod_id, user_id, hashid, message, has_photo, photo_width, photo_height, metadata, lat, lng, created_at, updated_at)
+      INSERT INTO messages (pod_id, user_id, hashid, message, attachment_url, photo_width, photo_height, metadata, lat, lng, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     "
     query = sanitize_sql_array([query, pod_id, user_id, hashid, message,
-        has_photo, photo_width, photo_height, metadata, lat, lng, created_at, updated_at])
+        attachment_url, photo_width, photo_height, metadata, lat, lng, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "

@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.integer  "user_id",    :limit => 8,                                 :default => 0
     t.string   "hashid"
     t.string   "message"
-    t.integer  "has_photo",  :limit => 1,                                 :default => 0
+    t.integer  "attachment_url"
     t.text     "metadata"
     t.decimal  "lat",                     :precision => 20, :scale => 16
     t.decimal  "lng",                     :precision => 20, :scale => 16

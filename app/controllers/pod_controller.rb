@@ -57,11 +57,6 @@ class PodController < ApplicationController
     
     response = []
     resp.each do |message|
-      
-      attachmentUrl = nil
-      if message['has_photo']==1
-        attachmentUrl = "http://s3.amazonaws.com/orcapods/#{message['hashid']}.jpg"
-      end
       response << {
           :id => message['id'].to_s,
           :podId => message['pod_id'].to_s,
@@ -70,7 +65,7 @@ class PodController < ApplicationController
           :fromName => message['full_name'],
           :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
           :message => message['message'],
-          :attachmentUrl => attachmentUrl,
+          :attachmentUrl => message['attachment_url'],
           :photoWidth => message['photo_width'],
           :photoHeight => message['photo_height'],
           :lat => nil,
@@ -173,26 +168,41 @@ class PodController < ApplicationController
   # @param REQUIRED pod_id
   # @param REQUIRED sequence
   # @param REQUIRED message
-  # @param OPTIONAL has_photo
+  # @param OPTIONAL attachment_url
   # @param OPTIONAL photo_width
   # @param OPTIONAL photo_height
   # @param OPTIONAL metadata
   # @param OPTIONAL lat
   # @param OPTIONAL lng
   # http://localhost:3000/v1/pods/13/messages/create?message=helloworld832h4&access_token=
-  # http://orcapods.heroku.com/v1/pods/13/messages/create?message=pictest&has_photo=1&sequence=1&photo_width=400&photo_height=300
+  # http://orcapods.heroku.com/v1/pods/13/messages/create?message=pictest&attachment_url=XXX&sequence=1&photo_width=400&photo_height=300
   def message_new
     
-    Rails.logger.info request.query_parameters.inspect
-    puts "params: #{params}"
+    # Rails.logger.info request.query_parameters.inspect
+    # puts "params: #{params}"
+    
+    # access_key_id: AKIAJRFSK3RWQ7XLGNFA
+    # secret_access_key: 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
     
     if params[:sequence].nil?
       params[:sequence] = SecureRandom.hex(64)
     end
     
+    # Upload file to AWS S3
+    attachment = params['attachment']
+    if not attachment.nil?
+      attachment_file_name = attachment.original_filename
+      attachment_file = attachment.tempfile
+      AWS::S3::Base.establish_connection!(
+        :access_key_id     => 'AKIAJRFSK3RWQ7XLGNFA',
+        :secret_access_key => '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'
+      )
+      AWS::S3::S3Object.store(attachment_file_name, open(attachment_file), 'orcapods', :access => :public_read)
+    end
+    
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:has_photo], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
-    #response = Pod.create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:has_photo], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:attachment_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
+    #response = Pod.create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:attachment_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
     
     response = {:success => "True: "+response}
     respond_to do |format|
