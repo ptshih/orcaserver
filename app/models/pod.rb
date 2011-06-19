@@ -140,10 +140,11 @@ class Pod < ActiveRecord::Base
     #         VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
     # "
     query = "
-      INSERT INTO messages (pod_id, user_id, hashid, message, has_photo, metadata, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO messages (pod_id, user_id, hashid, message, has_photo, photo_width, photo_height, metadata, lat, lng, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     "
-    query = sanitize_sql_array([query, pod_id, user_id, hashid, message, has_photo, metadata, created_at, updated_at])
+    query = sanitize_sql_array([query, pod_id, user_id, hashid, message,
+        has_photo, photo_width photo_height, metadata, lat, lng, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "
