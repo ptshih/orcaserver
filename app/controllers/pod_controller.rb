@@ -141,7 +141,7 @@ class PodController < ApplicationController
   # Create message
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
-  # @param REQUIRED message_uuid
+  # @param REQUIRED sequence
   # @param REQUIRED message
   # @param OPTIONAL has_photo
   # @param OPTIONAL photo_width
@@ -150,6 +150,7 @@ class PodController < ApplicationController
   # @param OPTIONAL lat
   # @param OPTIONAL lng
   # http://localhost:3000/v1/pods/13/messages/create?message=helloworld832h4&access_token=
+  # http://orcapods.heroku.com/v1/pods/13/messages/create?message=pictest&has_photo=1&sequence=1&photo_width=400&photo_height=300
   def message_new
     
     Rails.logger.info request.query_parameters.inspect
@@ -175,8 +176,7 @@ class PodController < ApplicationController
   # @param REQUIRED access_token (user who is doing the adding)
   # @param REQUIRED pod_id
   # @param REQUIRED user_id (user who is being added)
-  # http://localhost:3000/v1/pods/13/user/443/add?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
-  # match ':version/pods/:pod_id/user/:user_id/add
+  # http://orcapods.heroku.com/v1/pods/13/user/443/add?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
   def add_user
     
     Rails.logger.info request.query_parameters.inspect
