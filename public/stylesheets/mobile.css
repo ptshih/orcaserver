@@ -114,7 +114,7 @@ span3 {
 */
 
 .formwrapper {
-	margin: 6px 0 4px 0;
+	margin: 6px 10px 4px 0;
 	padding: 10px 5px 0 5px;
 	top: 0;
 	left: 0;
@@ -126,80 +126,9 @@ span3 {
 	
 }
 
-#submit {
+.submitbtn {
 	margin: 5px 5px 5px 0;
-	padding: 7px 10px 7px 10px;	
 	float: right;
-	color: #ffffff;
-	font-size: 0.8em;
-	cursor: pointer;
-	-moz-border-radius:     1em;
-	-webkit-border-radius:  1em;
-	border-radius:          1em;
-	border: 1px solid 		#222;
-	background: 			#333333;
-	font-weight: bold;
-	color: 					#fff;
-	text-shadow: 0 -1px 1px #000;
-	background-image: -moz-linear-gradient(top, 
-							#00d70e, 
-							#20a100);
-	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#00d70e),
-		color-stop(1, 		#20a100));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#00d70e', EndColorStr='#20a100')";
-}
-
-#submit:hover {
-	border: 1px solid 		#000;
-	background: 			#444444;
-	font-weight: bold;
-	color: 					#fff;
-	text-shadow: 0 -1px 1px #000;
-	background-image: -moz-linear-gradient(top, 
-							#00ff0d, 
-							#00be0c);
-	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#00ff0d),
-		color-stop(1, 		#00be0c));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#00ff0d', EndColorStr='#00be0c')";
-}
-
-#submit:active {
-	border: 1px solid 		#000;
-	background: 			#3d3d3d;
-	font-weight: bold;
-	color: 					#fff;
-	text-shadow: 0 -1px 1px #000;
-	background-image: -moz-linear-gradient(top, 
-							#007007, 
-							#00be0c);
-	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#007007),
-		color-stop(1, 		#00be0c));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#007007', EndColorStr='#00be0c')";
-}
-
-#submit span {
-	position: relative;
-	height: 18px;
-}
-
-.check {
-	width: 18px;
-	height: 18px;
-	position: relative;
-	float: left;
-	left: -4px;
-	background: 						#666;
-	background: 						rgba(0,0,0,.4);
-	background-position: 	-252px 50%;
-	background-image: url(images/icons-18-white.png);
-	background-repeat: no-repeat;
-	-moz-border-radius: 				9px;
-	-webkit-border-radius: 				9px;
-	border-radius: 						9px;
-
 }
 
 #commentpost {
