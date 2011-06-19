@@ -127,7 +127,7 @@ class PodController < ApplicationController
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
     
-    @current_user.mute_pod(params[:pod_id], param[:hours])
+    @current_user.mute_pod(params[:pod_id], params[:hours].to_i)
     
     response = {:success => "true"}
     respond_to do |format|
