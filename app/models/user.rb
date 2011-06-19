@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
     if !self.first_name.nil?
       user_name = self.first_name.to_s
     end
-    if self.last_name.length>1
+    if !self.last_name.nil?
       user_name = user_name + " " + self.last_name[0].to_s
     end
     return user_name

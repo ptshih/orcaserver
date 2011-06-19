@@ -120,6 +120,7 @@ class PodController < ApplicationController
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
   # http://localhost:3000/v1/pods/:id/mute/:hours
+  # http://localhost:3000/v1/pods/1/mute/10
   def mute_pod
     
     Rails.logger.info request.query_parameters.inspect
@@ -204,7 +205,7 @@ class PodController < ApplicationController
   # @param REQUIRED access_token (user who is doing the adding)
   # @param REQUIRED pod_id
   # @param REQUIRED user_id (user who is being added)
-  # http://orcapods.heroku.com/v1/pods/13/user/443/add?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
+  # http://orcapods.heroku.com/v1/pods/13/user/443/add?access_token=omgwtfbbqadmin
   def add_user
     
     Rails.logger.info request.query_parameters.inspect
@@ -226,7 +227,7 @@ class PodController < ApplicationController
   # @param REQUIRED access_token (user who is doing the adding)
   # @param REQUIRED pod_id
   # @param REQUIRED user_id
-  # http://orcapods.heroku.com/v1/pods/13/user/443/add?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
+  # http://orcapods.heroku.com/v1/pods/13/user/443/add?access_token=omgwtfbbqadmin
   def remove_user
     
     Rails.logger.info request.query_parameters.inspect

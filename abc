@@ -1,0 +1,103 @@
+2011-06-19T08:17:52+00:00 app[web.1]: Started GET "/v1/pods/13/user/443/add?access_token=omgwtfbbqadmin" for 76.102.151.70 at 2011-06-19 01:17:52 -0700
+2011-06-19T08:17:52+00:00 app[web.1]:   Processing by PodController#add_user as HTML
+2011-06-19T08:17:52+00:00 app[web.1]:   Parameters: {"access_token"=>"omgwtfbbqadmin", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:17:52+00:00 app[web.1]: {"access_token"=>"omgwtfbbqadmin"}
+2011-06-19T08:17:52+00:00 app[web.1]: params: {"access_token"=>"omgwtfbbqadmin", "controller"=>"pod", "action"=>"add_user", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:17:52+00:00 app[web.1]: Completed 406 Not Acceptable in 112ms
+2011-06-19T08:17:52+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/user/443/add dyno=web.1 queue=0 wait=0ms service=454ms bytes=1
+2011-06-19T08:17:53+00:00 heroku[nginx]: GET /v1/pods/13/user/443/add?access_token=omgwtfbbqadmin HTTP/1.1 | 76.102.151.70 | 303 | http | 406
+2011-06-19T08:17:53+00:00 heroku[router]: GET orcapods.heroku.com/favicon.ico dyno=web.1 queue=0 wait=0ms service=1ms bytes=0
+2011-06-19T08:19:08+00:00 app[web.1]: 
+2011-06-19T08:19:08+00:00 app[web.1]: 
+2011-06-19T08:19:08+00:00 app[web.1]: Started GET "/v1/pods/13/user/443/add?access_token=omgwtfbbqadmin" for 76.102.151.70 at 2011-06-19 01:19:08 -0700
+2011-06-19T08:19:08+00:00 app[web.1]:   Processing by PodController#add_user as HTML
+2011-06-19T08:19:08+00:00 app[web.1]:   Parameters: {"access_token"=>"omgwtfbbqadmin", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:19:08+00:00 app[web.1]: {"access_token"=>"omgwtfbbqadmin"}
+2011-06-19T08:19:08+00:00 app[web.1]: params: {"access_token"=>"omgwtfbbqadmin", "controller"=>"pod", "action"=>"add_user", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:19:08+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/user/443/add dyno=web.1 queue=0 wait=0ms service=18ms bytes=1
+2011-06-19T08:19:08+00:00 app[web.1]: Completed 406 Not Acceptable in 14ms
+2011-06-19T08:19:08+00:00 heroku[router]: GET orcapods.heroku.com/favicon.ico dyno=web.1 queue=0 wait=0ms service=1ms bytes=0
+2011-06-19T08:19:28+00:00 app[web.1]: 
+2011-06-19T08:19:28+00:00 app[web.1]: 
+2011-06-19T08:19:28+00:00 app[web.1]: Started GET "/v1/pods/13/user/443/add?access_token=omgwtfbbqadmin" for 76.102.151.70 at 2011-06-19 01:19:28 -0700
+2011-06-19T08:19:28+00:00 app[web.1]:   Processing by PodController#add_user as HTML
+2011-06-19T08:19:28+00:00 app[web.1]:   Parameters: {"access_token"=>"omgwtfbbqadmin", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:19:28+00:00 app[web.1]: {"access_token"=>"omgwtfbbqadmin"}
+2011-06-19T08:19:28+00:00 app[web.1]: params: {"access_token"=>"omgwtfbbqadmin", "controller"=>"pod", "action"=>"add_user", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:19:28+00:00 app[web.1]: Completed 406 Not Acceptable in 22ms
+2011-06-19T08:19:28+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/user/443/add dyno=web.1 queue=0 wait=0ms service=28ms bytes=1
+2011-06-19T08:19:28+00:00 heroku[router]: GET orcapods.heroku.com/favi
+con.ico dyno=web.1 queue=0 wait=0ms service=1ms bytes=0
+2011-06-19T08:19:28+00:00 heroku[nginx]: GET /v1/pods/13/user/443/add?access_token=omgwtfbbqadmin HTTP/1.1 | 76.102.151.70 | 304 | http | 406
+2011-06-19T08:19:29+00:00 heroku[nginx]: GET /favicon.ico HTTP/1.1 | 76.102.151.70 | 198 | http | 304
+2011-06-19T08:19:46+00:00 app[web.1]: 
+2011-06-19T08:19:46+00:00 app[web.1]: 
+2011-06-19T08:19:46+00:00 app[web.1]: Started GET "/v1/pods?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c" for 76.102.151.70 at 2011-06-19 01:19:46 -0700
+2011-06-19T08:19:46+00:00 app[web.1]:   Processing by PodController#index as JSON
+2011-06-19T08:19:46+00:00 app[web.1]:   Parameters: {"access_token"=>"c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c", "version"=>"v1"}
+2011-06-19T08:19:46+00:00 app[web.1]: Completed 200 OK in 55ms (Views: 4.3ms | ActiveRecord: 53.4ms)
+2011-06-19T08:19:46+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods dyno=web.1 queue=0 wait=0ms service=62ms bytes=1538
+2011-06-19T08:19:53+00:00 app[web.1]: 
+2011-06-19T08:19:53+00:00 app[web.1]: 
+2011-06-19T08:19:53+00:00 app[web.1]: Started GET "/v1/pods/13/messages?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c" 
+for 76.102.151.70 at 2011-06-19 01:19:53 -0700
+2011-06-19T08:19:53+00:00 app[web.1]:   Processing by PodController#message_index as JSON
+2011-06-19T08:19:53+00:00 app[web.1]:   Parameters: {"access_token"=>"c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c", "version"=>"v1", "pod_id"=>"13"}
+2011-06-19T08:19:53+00:00 app[web.1]: {"access_token"=>"c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c"}
+2011-06-19T08:19:53+00:00 app[web.1]: params: {"access_token"=>"c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c", "controller"=>"pod", "action"=>"message_index", "version"=>"v1", "pod_id"=>"13"}
+2011-06-19T08:19:53+00:00 app[web.1]: Completed 200 OK in 10ms (Views: 5.2ms | ActiveRecord: 2.6ms)
+2011-06-19T08:19:53+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/messages dyno=web.1 queue=0 wait=0ms service=21ms bytes=8355
+2011-06-19T08:19:54+00:00 heroku[nginx]: GET /v1/pods/13/messages?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c HTTP/1.1 | 76.102.151.70 | 2346 | http | 200
+2011-06-19T08:19:55+00:00 app[web.1]: 
+2011-06-19T08:19:55+00:00 app[web.1]: 
+2011-06-19T08:19:55+00:00 app[web.1]: Started
+ GET "/v1/pods/13/messages?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c" for 76.102.151.70 at 2011-06-19 01:19:55 -0700
+2011-06-19T08:19:55+00:00 app[web.1]:   Processing by PodController#message_index as JSON
+2011-06-19T08:19:55+00:00 app[web.1]:   Parameters: {"access_token"=>"c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c", "version"=>"v1", "pod_id"=>"13"}
+2011-06-19T08:19:55+00:00 app[web.1]: {"access_token"=>"c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c"}
+2011-06-19T08:19:55+00:00 app[web.1]: params: {"access_token"=>"c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c", "controller"=>"pod", "action"=>"message_index", "version"=>"v1", "pod_id"=>"13"}
+2011-06-19T08:19:55+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/messages dyno=web.1 queue=0 wait=0ms service=14ms bytes=8355
+2011-06-19T08:19:55+00:00 app[web.1]: Completed 200 OK in 9ms (Views: 5.1ms | ActiveRecord: 2.4ms)
+2011-06-19T08:19:56+00:00 heroku[nginx]: GET /v1/pods/13/messages?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c HTTP/1.1 | 76.102.151.70 | 2355 | http | 200
+2011-06-19T08:20:12+00:00 app[web.1]: 
+2011-06-19T08:20:12+00:00 app[web.1]: 
+2011-06-19T08:20:12+00:00 app[web.1]: Started GET "/v1/pods/13/user/443/add?access_token=omgwtfbbqadmin" for 76.102.151.70 at 2011-06-19 01:20:12 -0700
+2011-06-19T08:20:12+00:00 app[web.1]:   Processing by PodController#add_user as HTML
+2011-06-19T08:20:12+00:00 app[web.1]:   Parameters: {"access_token"=>"omgwtfbbqadmin", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:20:12+00:00 app[web.1]: {"access_token"=>"omgwtfbbqadmin"}
+2011-06-19T08:20:12+00:00 app[web.1]: params: {"access_token"=>"omgwtfbbqadmin", "controller"=>"pod", "action"=>"add_user", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:20:14+00:00 app[web.1]: Completed 406 Not Acceptable in 1613ms
+2011-06-19T08:20:14+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/user/443/add dyno=web.1 queue=0 wait=0ms service=1623ms bytes=1
+2011-06-19T08:20:14+00:00 heroku[router]: GET orcapods.heroku.com/favicon.ico dyno=web.1 queue=0 wait=0ms service=1ms bytes=0
+2011-06-19T08:20:26+00:00 app[web.1]: 
+2011-06-19T08:20:26+00:00 app[web.1]: 
+2011-06-19T08:20:26+00:00 app[web.1]: Started GET "/v1/pods/13/user/443/remove?access_token=omgwtfbbqadmin" for 76.102.151.70 at 2011-06-19 01:20:26 -0700
+2011-06-19T08:20:26+00:00 app[web.1]:   Processing by PodController#remove_user as HTML
+2011-06-19T08:20:26+00:00 app[web.1]:   Parameters: {"access_token"=>"omgwtfbbqadmin", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:20:26+00:00 app[web.1]: {"access_token"=>"omgwtfbbqadmin"}
+2011-06-19T08:20:26+00:00 app[web.1]: params: {"access_token"=>"omgwtfbbqadmin", "controller"=>"pod", "action"=>"remove_user", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:20:26+00:00 app[web.1]: Completed 500 Internal Server Error in 22ms
+2011-06-19T08:20:26+00:00 app[web.1]: 
+2011-06-19T08:20:26+00:00 app[web.1]: NoMethodError (undefined method `length' for nil:NilClass):
+2011-06-19T08:20:26+00:00 app[web.1]:   app/models/user.rb:78:in `get_short_name'
+2011-06-19T08:20:26+00:00 app[web.1]:   app/models/pod.rb:258:in `remove_user_from_pod'
+2011-06-19T08:20:26+00:00 app[web.1]:   app/controllers/pod_controller.rb:236:in `remove_user'
+2011-06-19T08:20:26+00:00 app[web.1]: 
+2011-06-19T08:20:26+00:00 app[web.1]: 
+2011-06-19T08:20:26+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/user/443/remove dyno=web.1 queue=0 wait=0ms service=47ms bytes=728
+2011-06-19T08:20:28+00:00 app[web.1]: 
+2011-06-19T08:20:28+00:00 app[web.1]: 
+2011-06-19T08:20:28+00:00 app[web.1]: Started GET "/v1/pods/13/user/443/remove?access_token=omgwtfbbqadmin" for 76.102.151.70 at 2011-06-19 01:20:28 -0700
+2011-06-19T08:20:28+00:00 app[web.1]:   Processing by PodController#remove_user as HTML
+2011-06-19T08:20:28+00:00 app[web.1]:   Parameters: {"access_token"=>"omgwtfbbqadmin", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:20:28+00:00 app[web.1]: {"access_token"=>"omgwtfbbqadmin"}
+2011-06-19T08:20:28+00:00 app[web.1]: params: {"access_token"=>"omgwtfbbqadmin", "controller"=>"pod", "action"=>"remove_user", "version"=>"v1", "pod_id"=>"13", "user_id"=>"443"}
+2011-06-19T08:20:29+00:00 app[web.1]: Completed 500 Internal Server Error in 349ms
+2011-06-19T08:20:29+00:00 app[web.1]: 
+2011-06-19T08:20:29+00:00 app[web.1]: NoMethodError (undefined method `length' for nil:NilClass):
+2011-06-19T08:20:29+00:00 app[web.1]:   app/models/user.rb:78:in `get_short_name'
+2011-06-19T08:20:29+00:00 app[web.1]:   app/models/pod.rb:258:in `remove_user_from_pod'
+2011-06-19T08:20:29+00:00 app[web.1]:   app/controllers/pod_controller.rb:236:in `remove_user'
+2011-06-19T08:20:29+00:00 app[web.1]: 
+2011-06-19T08:20:29+00:00 app[web.1]: 
+2011-06-19T08:20:29+00:00 heroku[router]: GET orcapods.heroku.com/v1/pods/13/user/443/remove dyno=web.1 queue=0 wait=0ms service=354ms bytes=728
