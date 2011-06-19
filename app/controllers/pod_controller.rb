@@ -105,7 +105,8 @@ class PodController < ApplicationController
           :id => user['id'].to_s,
           :full_name => user['full_name'].to_s,
           :first_name => user['first_name'].to_s,
-          :last_name => user['last_name'].to_s
+          :last_name => user['last_name'].to_s,
+          :picture_url => "http://graph.facebook.com/"+user['facebook_id'].to_s+"/picture?type=square",
         }
     end
     response_hash['data'] = response
