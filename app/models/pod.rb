@@ -144,7 +144,7 @@ class Pod < ActiveRecord::Base
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     "
     query = sanitize_sql_array([query, pod_id, user_id, hashid, message,
-        has_photo, photo_width photo_height, metadata, lat, lng, created_at, updated_at])
+        has_photo, photo_width, photo_height, metadata, lat, lng, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "
