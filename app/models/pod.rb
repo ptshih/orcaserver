@@ -27,6 +27,29 @@ class Pod < ActiveRecord::Base
   
   def self.index(user_id)
     response_array = []
+    
+    query = "
+      select pod_id, first_name
+      from pods_users map
+      join users u on map.user_id = u.id
+      where pod_id in (select pod_id from pods_users where user_id=?)
+      and pod_id !=1
+    "
+    query = sanitize_sql_array([query, user_id])
+    qresult = ActiveRecord::Base.connection.execute(query)
+    participants_hash = {}
+    qresult.each(:as => :hash) do |row|
+      if participants_hash[row['pod_id']].nil?
+        new_list = [row['first_name']]
+        participants_hash[row['pod_id']] = new_list
+      elsif participants_hash[row['pod_id']].length<=4
+        participants_hash[row['pod_id']] << row['first_name']
+      else
+      end
+    end 
+    
+    participants_hash[1] = ['Public Room']
+    
     query = "
       SELECT p.id, p.name, m.message, m.hashid, u.id as userid, u.facebook_id, u.full_name, p.updated_at
       FROM pods p
@@ -37,6 +60,7 @@ class Pod < ActiveRecord::Base
     query = sanitize_sql_array([query, user_id])
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
+      row['participants'] = participants_hash[row['id']].join(',')
       response_array << row
     end
     # @DB.fetch(query) do |row|

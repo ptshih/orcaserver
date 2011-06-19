@@ -24,7 +24,7 @@ class PodController < ApplicationController
         :fromPictureUrl => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
         :message => pod['message'],
         :sequence => pod['hashid'],
-        :participants => 'participants',
+        :participants => pod['participants'],
         :lat => nil,
         :lng => nil,
         :timestamp => pod['updated_at'].to_i,
