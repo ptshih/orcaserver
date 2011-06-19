@@ -185,7 +185,29 @@ class PodController < ApplicationController
     puts "params: #{params}"
     
     pod = Pod.find_by_id(params[:pod_id])
-    response = pod.add_user_to_pod(params[:user_id]).to_s
+    response = pod.add_user_to_pod(params[:user_id], @current_user.id).to_s
+    
+    response = {:success => "True: "+response}
+    respond_to do |format|
+      format.xml  { render :xml => response }
+      format.json  { render :json => response }
+    end
+    
+  end
+  
+  
+  # Remove users from pod
+  # @param REQUIRED access_token (user who is doing the adding)
+  # @param REQUIRED pod_id
+  # @param REQUIRED user_id
+  # http://orcapods.heroku.com/v1/pods/13/user/443/add?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
+  def remove_user
+    
+    Rails.logger.info request.query_parameters.inspect
+    puts "params: #{params}"
+    
+    pod = Pod.find_by_id(params[:pod_id])
+    response = pod.remove_user_from_pod(params[:user_id], @current_user.id).to_s
     
     response = {:success => "True: "+response}
     respond_to do |format|

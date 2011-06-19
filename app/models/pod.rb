@@ -195,32 +195,53 @@ class Pod < ActiveRecord::Base
 
   # Add the user to pods_users mapping
   # If user already part of pod, return false, Else true
-  def add_user_to_pod(user_id=nil)
+  def add_user_to_pod(target_user_id=nil, user_id=nil)
     
     now_time = Time.now.utc.to_s(:db)
     query = " insert ignore into pods_users
               (user_id, pod_id, updated_at, created_at)
-              select #{user_id}, #{self.id}, '#{now_time}', '#{now_time}'"
+              select #{target_user_id}, #{self.id}, '#{now_time}', '#{now_time}'"
     mysqlresult = ActiveRecord::Base.connection.execute(query)
     
-    query = " select count(*) as rows from pods_users where user_id = #{user_id} and created_at = '#{now_time}'"
+    query = " select count(*) as rows from pods_users where user_id = #{target_user_id} and created_at = '#{now_time}'"
     mysqlresult = ActiveRecord::Base.connection.execute(query)
     rowcount=0
     mysqlresult.each(:as => :hash) do |row|
       rowcount=row['rows']
     end
     
-    added_user = User.find_by_id(user_id)
+    added_user = User.find_by_id(target_user_id)
+    user = User.find_by_id(user_id)    
 
     # when user has joined pod, add message to pod stating the join
     if rowcount>0
       message_sequence = SecureRandom.hex(64)
-      message = "joined pod #{self.name}"
-      Pod.async_create_message(self.id, user_id, added_user.get_short_name, message_sequence, message)
+      message = "added #{added_user.full_name} to pod #{self.name}"
+      Pod.async_create_message(self.id, user_id, user.get_short_name, message_sequence, message)
       return true
     end
     
     return false
+    
+  end
+  
+  # Remove user from pods_users mapping
+  def remove_user_from_pod(target_user_id=nil, user_id=nil)
+    
+    now_time = Time.now.utc.to_s(:db)
+    query = " delete from pods_users
+              where user_id = #{target_user_id} and pod_id = #{self.id}
+            "
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+
+    target_user = User.find_by_id(target_user_id)
+    user = User.find_by_id(user_id)
+
+    # when user has left the pod, add message to pod stating the remove
+    message_sequence = SecureRandom.hex(64)
+    message = "removed #{target_user.full_name} from pod"
+    Pod.async_create_message(self.id, user_id, user.get_short_name, message_sequence, message)
+    return true
     
   end
   

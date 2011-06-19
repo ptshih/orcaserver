@@ -21,6 +21,8 @@ Orcapods::Application.routes.draw do
   match ':version/pods/:pod_id/mute/:hours', :controller => 'pod', :action =>'mute_pod', :via => ["get","post"]
   # Add user to pod
   match ':version/pods/:pod_id/user/:user_id/add', :controller => 'pod', :action =>'add_user', :via => ["get","post"]
+  # Remove user to pod
+  match ':version/pods/:pod_id/user/:user_id/remove', :controller => 'pod', :action =>'remove_user', :via => ["get","post"]
 
   # http://localhost:3000/v1/pods
   # http://localhost:3000/v1/pods/1/messages
