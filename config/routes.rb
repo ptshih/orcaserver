@@ -10,11 +10,15 @@ Orcapods::Application.routes.draw do
   match ':version/pods', :controller => 'pod', :action => 'index', :via => :get # get list of pods
   match ':version/pods/:pod_id/messages', :controller => 'pod', :action => 'message_index', :via => :get # get list of messages
 
-  # Writes
+## Writes
+  # Create pod
   match ':version/pods/create', :controller => 'pod', :action =>'new', :via => ["get","post"]
+  # Create message
   match ':version/pods/:pod_id/messages/create', :controller => 'pod', :action =>'message_new', :via => ["get","post"]
+  # Mute pod
   match ':version/pods/:pod_id/mute', :controller => 'pod', :action =>'mute_pod', :via => ["get","post"]
-
+  # Add user to pod
+  match ':version/pods/:pod_id/user/:user_id/add', :controller => 'pod', :action =>'add_user', :via => ["get","post"]
 
   # http://localhost:3000/v1/pods
   # http://localhost:3000/v1/pods/1/messages

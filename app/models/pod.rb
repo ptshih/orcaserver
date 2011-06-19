@@ -32,8 +32,9 @@ class Pod < ActiveRecord::Base
       FROM pods p
       JOIN messages m on p.last_message_id = m.id
       JOIN users u on u.id = m.user_id
-      WHERE p.id in (SELECT pod_id FROM pods_users WHERE user_id=#{user_id})
+      WHERE p.id in (SELECT pod_id FROM pods_users WHERE user_id=?)
     "
+    query = sanitize_sql_array([query, user_id])
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
       response_array << row
@@ -52,7 +53,7 @@ class Pod < ActiveRecord::Base
         join users u on u.id = m.user_id
         WHERE pod_id = #{pod_id}
         ORDER BY updated_at DESC
-      "
+    "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
       response_array << row
@@ -67,45 +68,49 @@ class Pod < ActiveRecord::Base
   # Create pod
   # Insert user to pods_users map
   # Create first message of pod
-  def self.create(user_id, hashid, name)
-    
-    query = "
-      INSERT INTO pods (name, hashid, created_at, updated_at)
-      VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
-    "
-    qresult = ActiveRecord::Base.connection.execute(query)
-    
-    newpod = Pod.find_by_hashid('#{hashid}')
-    
-    query = "
-      INSERT INTO pods_users (pod_id, user_id)
-      SELECT #{newpod.id}, #{user_id.to_i}
-    "
-    qresult = ActiveRecord::Base.connection.execute(query)
-
-    message = "created pod"
-    send_name = newpod.name
-    async_create_message(newpod_id, user_id, send_name, hashid, message)
-    
-    return newpod
-
-  end
+  # def self.create(user_id, hashid, name)
+  #   
+  #   query = "
+  #     INSERT INTO pods (name, hashid, created_at, updated_at)
+  #     VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
+  #   "
+  #   qresult = ActiveRecord::Base.connection.execute(query)
+  #   
+  #   newpod = Pod.find_by_hashid('#{hashid}')
+  #   
+  #   query = "
+  #     INSERT INTO pods_users (pod_id, user_id)
+  #     SELECT #{newpod.id}, #{user_id.to_i}
+  #   "
+  #   qresult = ActiveRecord::Base.connection.execute(query)
+  # 
+  #   message = "created pod"
+  #   send_name = newpod.name
+  #   async_create_message(newpod_id, user_id, send_name, hashid, message)
+  #   
+  #   return newpod
+  # 
+  # end
   
-  def self.async_create_message(pod_id, user_id, current_user_name, hashid, message)
-    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message)
+  def self.async_create_message(pod_id, user_id, current_user_name, hashid, message, has_photo=nil, metadata=nil)
+    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message, has_photo, metadata)
     return ""
   end
   
-  def self.create_message(pod_id, user_id, current_user_name, hashid, message)
+  def self.create_message(pod_id, user_id, current_user_name, hashid, message, has_photo=nil, metadata=nil)
 
-    query = "
-      INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
-            VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
-    "
+    created_at = Time.now.utc.to_s(:db)
+    updated_at = Time.now.utc.to_s(:db)
     
-    # insert_response = @DB[query]
-    # response = "Created the message with id = #{insert_response.insert.to_s}"
-
+    # query = "
+    #   INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
+    #         VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
+    # "
+    query = "
+      INSERT INTO messages (pod_id, user_id, hashid, message, has_photo, metadata, created_at, updated_at)
+      VALUES (?, ?, ?, ?, now(), now())
+    "
+    query = sanitize_sql_array([query, pod_id, user_id, hashid, message, has_photo, metadata, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "
@@ -162,5 +167,36 @@ class Pod < ActiveRecord::Base
     return nil
   end
 
+  # Add the user to pods_users mapping
+  # If user already part of pod, return false
+  # Else true
+  def add_user_to_pod(user_id=nil)
+    
+    now_time = Time.now.utc.to_s(:db)
+    query = " insert ignore into pods_users
+              (user_id, pod_id, updated_at, created_at)
+              select #{user_id}, #{self.id}, '#{now_time}', '#{now_time}'"
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+    
+    query = " select count(*) as rows from pods_users where user_id = #{user_id} and created_at = '#{now_time}'"
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+    rowcount=0
+    mysqlresult.each(:as => :hash) do |row|
+      rowcount=row['rows']
+    end
+    
+    added_user = User.find_by_id(user_id)
+
+    # when user has joined pod, add message to pod stating the join
+    if rowcount>0
+      message_sequence = SecureRandom.hex(64)
+      message = " joined pod #{self.name}"
+      Pod.async_create_message(self.id, user_id, added_user.get_short_name, message_sequence, message)
+      return true
+    end
+    
+    return false
+    
+  end
   
 end

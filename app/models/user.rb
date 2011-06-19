@@ -41,8 +41,11 @@ class User < ActiveRecord::Base
     
   end
   
-  def add_to_party_pod
-    pod_id = 1
+  def add_to_pod(pod_id=nil)
+    
+    if pod_id.nil?
+      pod_id=1
+    end
     now_time = Time.now.utc.to_s(:db)
     query = " insert ignore into pods_users
               (user_id, pod_id, updated_at, created_at)
@@ -70,10 +73,10 @@ class User < ActiveRecord::Base
   def get_short_name
     user_name = ""
     if !self.first_name.nil?
-      user_name = self.first_name
+      user_name = self.first_name.to_s
     end
     if self.last_name.length>1
-      user_name = user_name + " " + self.last_name[0]
+      user_name = user_name + " " + self.last_name[0].to_s
     end
     return user_name
   end

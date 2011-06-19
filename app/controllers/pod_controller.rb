@@ -101,7 +101,7 @@ class PodController < ApplicationController
   # Create new pod
   # @param REQUIRED access_token
   # @param REQUIRED name
-  # http://localhost:3000/v1/pods/create?name=pod123&access_token=1
+  # http://localhost:3000/v1/pods/create?name=TestCreatePod&access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
   # http://orcapods.heroku.com/v1/pods/create?name=TestCreatePod&access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
   def new
     
@@ -112,7 +112,14 @@ class PodController < ApplicationController
       params[:sequence] = SecureRandom.hex(64)
     end
     
-    response = Pod.create(@current_user.id, params[:sequence], params[:name])
+    newpod = Pod.create(
+      :name => params[:name],
+      :hashid => params[:sequence],
+      :created_at => Time.now.utc.to_s(:db),
+      :updated_at => Time.now.utc.to_s(:db)
+    )
+    response = newpod.add_user_to_pod(@current_user.id)
+    # response = Pod.create(@current_user.id, params[:sequence], params[:name])
     
     response = {:success => "true"}
     respond_to do |format|
@@ -127,7 +134,8 @@ class PodController < ApplicationController
   # @param REQUIRED pod_id
   # @param REQUIRED message_uuid
   # @param REQUIRED message
-  # http://localhost:3000/v1/pods/1/messages/create?message=helloworld832h4&access_token=1
+  # @param OPTIONAL metadata
+  # http://localhost:3000/v1/pods/13/messages/create?message=helloworld832h4&access_token=
   def message_new
     
     Rails.logger.info request.query_parameters.inspect
@@ -139,7 +147,29 @@ class PodController < ApplicationController
     
     # Change to use create_message_via_resque
     response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message])
-    # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message])
+    # response = Pod.create_message(params[:pod_id], params[:user_id], params[:message_uuid], params[:message], params[:metadata])
+    
+    response = {:success => "True: "+response}
+    respond_to do |format|
+      format.xml  { render :xml => response }
+      format.json  { render :json => response }
+    end
+    
+  end
+  
+  # Add user to pod
+  # @param REQUIRED access_token (user who is doing the adding)
+  # @param REQUIRED pod_id
+  # @param REQUIRED user_id (user who is being added)
+  # http://localhost:3000/v1/pods/13/user/443/add?access_token=c7ae490c95c140716923383f2a25ddf46fd7b7f0afb768e0ccd36315dc1b91bbeb7e82e5faf303731a6fa6f106321bcb05d7bd2c1b7829087192057511ec550c
+  # match ':version/pods/:pod_id/user/:user_id/add
+  def add_user
+    
+    Rails.logger.info request.query_parameters.inspect
+    puts "params: #{params}"
+    
+    pod = Pod.find_by_id(params[:pod_id])
+    response = pod.add_user_to_pod(params[:user_id]).to_s
     
     response = {:success => "True: "+response}
     respond_to do |format|
