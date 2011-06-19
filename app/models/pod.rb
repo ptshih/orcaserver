@@ -92,6 +92,21 @@ class Pod < ActiveRecord::Base
     #     end
     return response_array    
   end
+  
+  def self.get_members(pod_id=nil)
+    response_array = []
+    query = "
+        select u.id, u.full_name, u.first_name, u.last_name
+        from orca.pods_users map
+        join orca.users u on map.user_id = u.id
+        where map.pod_id = #{pod_id}
+    "
+    qresult = ActiveRecord::Base.connection.execute(query)
+    qresult.each(:as => :hash) do |row|
+      response_array << row
+    end
+    return response_array
+  end
 
 
   # Create pod

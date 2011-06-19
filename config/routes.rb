@@ -9,6 +9,8 @@ Orcapods::Application.routes.draw do
   # Read
   match ':version/pods', :controller => 'pod', :action => 'index', :via => :get # get list of pods
   match ':version/pods/:pod_id/messages', :controller => 'pod', :action => 'message_index', :via => :get # get list of messages
+  match ':version/pods/:pod_id/members', :controller => 'pod', :action => 'members', :via => :get # get list of members
+  
   
   resources :pod
   

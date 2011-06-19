@@ -93,6 +93,32 @@ class PodController < ApplicationController
   # Mute pod
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
+  # http://localhost:3000/v1/pods/3/members
+  def members
+    Rails.logger.info request.query_parameters.inspect
+    puts "params: #{params}"
+    response_hash = {}
+    response = []
+    resp = Pod.get_members(params[:pod_id])
+    resp.each do |user|
+      response << {
+          :id => user['id'].to_s,
+          :full_name => user['full_name'].to_s,
+          :first_name => user['first_name'].to_s,
+          :last_name => user['last_name'].to_s
+        }
+    end
+    response_hash['data'] = response
+    respond_to do |format|
+      format.xml  { render :xml => response_hash }
+      format.json  { render :json => response_hash }
+    end
+    
+  end
+  
+  # Mute pod
+  # @param REQUIRED access_token
+  # @param REQUIRED pod_id
   # http://localhost:3000/v1/pods/:id/mute/:hours
   def mute_pod
     
