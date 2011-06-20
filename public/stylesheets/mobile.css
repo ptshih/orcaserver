@@ -88,7 +88,7 @@ span3 {
 */
 
 .footerwrapper a:link {
-	color: #000000;
+	color: #ffffff;
 }
 
 .footerwrapper a:visited {
@@ -131,7 +131,7 @@ span3 {
 	float: right;
 }
 
-#commentpost {
+#message {
 	padding: 5px 5px 5px 5px;
 	border: none;
 	line-height: 1em;
