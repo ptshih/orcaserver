@@ -8,7 +8,7 @@
   <div data-role="content" id="content">
 	
 	<% @response_hash["data"].each do |t| %>
-	<a href="/v1/pods/<%= t[:id] %>/messages" class="messageunit">
+	<a href="/v1/pods/<%= t[:id] %>/messages?a=<%= t[:name] %>" class="messageunit">
 	<!-- make div a link replace above div with a href -->
 	  <div class="messageavatar">
 		<img src="../images/userpics/1.jpg">
@@ -18,7 +18,7 @@
 		<span2><%= t[:participants] %></span2>
 	  </div>
 	  <div class="messagetimestamp">
-		<span1>5hr</span1>
+		<span1><%= ((Time.now - Time.at(t[:timestamp])) / 3600 ).round %> hrs ago</span1>
 	  </div>
 	</a>
 	<% end %>
