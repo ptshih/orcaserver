@@ -23,7 +23,7 @@ class PodController < ApplicationController
         :fromName => pod['full_name'],
         :fromPictureUrl => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
         :message => pod['message'],
-        :sequence => pod['hashid'],
+        :sequence => pod['sequence'],
         :participants => pod['participants'],
         :lat => nil,
         :lng => nil,
@@ -60,7 +60,7 @@ class PodController < ApplicationController
       response << {
           :id => message['id'].to_s,
           :podId => message['pod_id'].to_s,
-          :sequence => message['hashid'],
+          :sequence => message['sequence'].to_s,
           :fromId => message['userid'].to_s,
           :fromName => message['full_name'],
           :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
@@ -68,8 +68,8 @@ class PodController < ApplicationController
           :attachmentUrl => message['attachment_url'],
           :photoWidth => message['photo_width'],
           :photoHeight => message['photo_height'],
-          :lat => nil,
-          :lng => nil,
+          :lat => message['lat'],
+          :lng => message['lng'],
           :timestamp => message['updated_at'].to_i
         }
     end
@@ -149,7 +149,7 @@ class PodController < ApplicationController
     
     newpod = Pod.create(
       :name => params[:name],
-      :hashid => params[:sequence],
+      :sequence => params[:sequence],
       :created_at => Time.now.utc.to_s(:db),
       :updated_at => Time.now.utc.to_s(:db)
     )
