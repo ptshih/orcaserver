@@ -50,7 +50,7 @@ class Pod < ActiveRecord::Base
     participants_hash[1] = ['Public Room']
     
     query = "
-      SELECT p.id, p.name, m.message, m.hashid, u.id as userid, u.facebook_id, u.full_name, p.updated_at
+      SELECT p.id, p.name, m.message, m.sequence, u.id as userid, u.facebook_id, u.full_name, p.updated_at
       FROM pods p
       JOIN messages m on p.last_message_id = m.id
       JOIN users u on u.id = m.user_id
@@ -75,8 +75,8 @@ class Pod < ActiveRecord::Base
   def self.message_index(pod_id, user_id)
     response_array = []
     query = "
-        SELECT m.id, pod_id, hashid, u.id as userid, u.facebook_id, u.full_name,
-          m.message, m.attachment_url, m.photo_width, m.photo_height, m.hashid,
+        SELECT m.id, pod_id, sequence, u.id as userid, u.facebook_id, u.full_name,
+          m.message, m.attachment_url, m.photo_width, m.photo_height, m.sequence,
           m.updated_at
         FROM messages m
         join users u on u.id = m.user_id
@@ -108,66 +108,37 @@ class Pod < ActiveRecord::Base
     return response_array
   end
 
-
-  # Create pod
-  # Insert user to pods_users map
-  # Create first message of pod
-  # def self.create(user_id, hashid, name)
-  #   
-  #   query = "
-  #     INSERT INTO pods (name, hashid, created_at, updated_at)
-  #     VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
-  #   "
-  #   qresult = ActiveRecord::Base.connection.execute(query)
-  #   
-  #   newpod = Pod.find_by_hashid('#{hashid}')
-  #   
-  #   query = "
-  #     INSERT INTO pods_users (pod_id, user_id)
-  #     SELECT #{newpod.id}, #{user_id.to_i}
-  #   "
-  #   qresult = ActiveRecord::Base.connection.execute(query)
-  # 
-  #   message = "created pod"
-  #   send_name = newpod.name
-  #   async_create_message(newpod_id, user_id, send_name, hashid, message)
-  #   
-  #   return newpod
-  # 
-  # end
   
-  
-  # params[:attachment_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
-  def self.async_create_message(pod_id, user_id, current_user_name, hashid, message,
+  def self.async_create_message(pod_id, user_id, current_user_name, sequence, message,
       attachment_url=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
-    Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message, attachment_url,
+    Pod.async(:create_message,pod_id, user_id, current_user_name, sequence, message, attachment_url,
       photo_width, photo_height, metadata, lat, lng)
     return ""
   end
   
-  def self.create_message(pod_id, user_id, current_user_name, hashid, message,
+  def self.create_message(pod_id, user_id, current_user_name, sequence, message,
       attachment_url=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
 
     created_at = Time.now.utc.to_s(:db)
     updated_at = Time.now.utc.to_s(:db)    
     # query = "
-    #   INSERT INTO messages (pod_id, user_id, hashid, message, created_at, updated_at)
-    #         VALUES (#{pod_id}, #{user_id}, \'#{hashid}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
+    #   INSERT INTO messages (pod_id, user_id, sequence, message, created_at, updated_at)
+    #         VALUES (#{pod_id}, #{user_id}, \'#{sequence}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
     # "
     query = "
-      INSERT INTO messages (pod_id, user_id, hashid, message, attachment_url, photo_width, photo_height, metadata, lat, lng, created_at, updated_at)
+      INSERT INTO messages (pod_id, user_id, sequence, message, attachment_url, photo_width, photo_height, metadata, lat, lng, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     "
-    query = sanitize_sql_array([query, pod_id, user_id, hashid, message,
+    query = sanitize_sql_array([query, pod_id, user_id, sequence, message,
         attachment_url, photo_width, photo_height, metadata, lat, lng, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "
-      UPDATE pods p, (select id, created_at from messages where hashid = ?) m
+      UPDATE pods p, (select id, created_at from messages where sequence = ?) m
       SET p.last_message_id = m.id, p.updated_at = m.created_at
       WHERE p.id=?
     "
-    query = sanitize_sql_array([query, hashid, pod_id])
+    query = sanitize_sql_array([query, sequence, pod_id])
     qresult = ActiveRecord::Base.connection.execute(query)
     now_time = Time.now.utc.to_s(:db)
     queryreceivers = "
@@ -192,7 +163,7 @@ class Pod < ActiveRecord::Base
         
         msg = {
           :pod_id  => pod_id,
-          :hashid  => hashid,
+          :sequence  => sequence,
           :user_id => user_id,
           :updated_at => Time.now.to_i
         }
@@ -206,6 +177,23 @@ class Pod < ActiveRecord::Base
     end
 
     return ""
+  end
+  
+  # Changing pod name
+  def self.change_name(name, user_id, pod_id)
+
+    query = " update pods set name = ? where id=?"
+    query =  self.sanitize_sql([query, name, pod_id])
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+
+    user = User.find_by_id(user_id)
+
+    message_sequence = SecureRandom.hex(64)
+    message = "changed pod name to #{name}"
+    Pod.async_create_message(pod_id, user.id, user.get_short_name, message_sequence, message)
+    
+    return message
+    
   end
 
   # Add the user to pods_users mapping
