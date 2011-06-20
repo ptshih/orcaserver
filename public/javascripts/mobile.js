@@ -2,9 +2,8 @@ $(document).ready(function(){
 
 });// end document.ready
 
-function sendmessage(e) {
-	alert('function called');
-  var formData = $("#newcomment").serialize();
+function sendmessage() {
+  var formData = $('#newcomment').serialize();
 
   if (formData.length > 0) {
     $.ajax({
@@ -13,13 +12,12 @@ function sendmessage(e) {
 		cache: false,
 		data: formData,
 		success: onSuccess
-  	});
+	});
+	alert('pause');
   }
-	e.preventDefault();
 }
 
 function podbtn() {
-	alert('pod button clicked');
 	resetTextFields();
 }
 
@@ -53,7 +51,6 @@ $.fn.autoresize = function() {
 
 function onSuccess(data){
 	resetTextFields();
-	alert('Success!!!!!!!');
 	//notifications ex. checkmark icon on success
 	data = $.trim(data);
 	// if(data == "SUCCESS") {
