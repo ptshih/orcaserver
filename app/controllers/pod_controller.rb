@@ -8,7 +8,7 @@ class PodController < ApplicationController
   
   # Get index of pods
   # http://localhost:3000/v1/pods
-  # http://orcapods.heroku.com/v1/pods?access_token=ab20afcd5def3b0cbc5f5352b63da16491a5715f3a0fbfd32179a8d73930532739525ca2387af8f8256d2b47a90af056cc013ced3dad56805852efc8080578b9
+  # http://orcapods.heroku.com/v1/pods?access_token=omgwtfbbqadmin
   def index
     
     @response_hash = {}
@@ -89,6 +89,7 @@ class PodController < ApplicationController
   # @param REQUIRED access_token
   # @param REQUIRED pod_id
   # http://localhost:3000/v1/pods/3/members
+  # http://orcapods.heroku.com/v1/pods/3/members
   def members
     Rails.logger.info request.query_parameters.inspect
     puts "params: #{params}"
@@ -246,6 +247,28 @@ class PodController < ApplicationController
     
     pod = Pod.find_by_id(params[:pod_id])
     response = pod.remove_user_from_pod(params[:user_id], @current_user.id).to_s
+    
+    response = {:success => "True: "+response}
+    respond_to do |format|
+      format.xml  { render :xml => response }
+      format.json  { render :json => response }
+    end
+    
+  end
+  
+  # Change pod name
+  # @param REQUIRED access_token (user who is doing the adding)
+  # @param REQUIRED pod_id
+  # @param REQUIRED pod_name
+  # http://orcapods.heroku.com/v1/pods/13/change_name?access_token=omgwtfbbqadmin
+  # http://localhost:3000/v1/pods/13/change_name?access_token=omgwtfbbqadmin
+  def change_pod_name
+    
+    Rails.logger.info request.query_parameters.inspect
+    puts "params: #{params}"
+    
+    # pod = Pod.find_by_id(params[:pod_id])
+    response = Pod.change_name(params[:pod_name], @current_user.id, params[:pod_id])
     
     response = {:success => "True: "+response}
     respond_to do |format|

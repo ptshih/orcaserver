@@ -108,36 +108,7 @@ class Pod < ActiveRecord::Base
     return response_array
   end
 
-
-  # Create pod
-  # Insert user to pods_users map
-  # Create first message of pod
-  # def self.create(user_id, hashid, name)
-  #   
-  #   query = "
-  #     INSERT INTO pods (name, hashid, created_at, updated_at)
-  #     VALUES (\'#{name.gsub(/\\|'/) { |c| "\\#{c}" }}\', \'#{hashid}\', now(), now())
-  #   "
-  #   qresult = ActiveRecord::Base.connection.execute(query)
-  #   
-  #   newpod = Pod.find_by_hashid('#{hashid}')
-  #   
-  #   query = "
-  #     INSERT INTO pods_users (pod_id, user_id)
-  #     SELECT #{newpod.id}, #{user_id.to_i}
-  #   "
-  #   qresult = ActiveRecord::Base.connection.execute(query)
-  # 
-  #   message = "created pod"
-  #   send_name = newpod.name
-  #   async_create_message(newpod_id, user_id, send_name, hashid, message)
-  #   
-  #   return newpod
-  # 
-  # end
   
-  
-  # params[:attachment_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
   def self.async_create_message(pod_id, user_id, current_user_name, hashid, message,
       attachment_url=nil, photo_width=nil, photo_height=nil, metadata=nil, lat=nil, lng=nil)
     Pod.async(:create_message,pod_id, user_id, current_user_name, hashid, message, attachment_url,
@@ -206,6 +177,23 @@ class Pod < ActiveRecord::Base
     end
 
     return ""
+  end
+  
+  # Changing pod name
+  def self.change_name(name, user_id, pod_id)
+
+    query = " update pods set name = ? where id=?"
+    query =  self.sanitize_sql([query, name, pod_id])
+    mysqlresult = ActiveRecord::Base.connection.execute(query)
+
+    user = User.find_by_id(user_id)
+
+    message_sequence = SecureRandom.hex(64)
+    message = "changed pod name to #{name}"
+    Pod.async_create_message(pod_id, user.id, user.get_short_name, message_sequence, message)
+    
+    return message
+    
   end
 
   # Add the user to pods_users mapping
