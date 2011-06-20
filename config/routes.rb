@@ -1,12 +1,12 @@
 Orcapods::Application.routes.draw do
   
-  # Register/signons
+## Register/signons
   match ':version/register', :to => 'login#register', :via => ["get","post"]  # CREATE: Register new user with access_token
   match ':version/session', :to => 'login#session', :via => ["get","post"] # SESSION: Start a new session for the current user
-  match ':version/registerpush', :to => 'login#registerpush', :via => ["get","post"] # SESSION: Start a new session for the current user
+  match ':version/registerpush', :to => 'login#registerpush', :via => ["get","post"] # Start a new session for the current user
 
   
-  # Read
+## Read
   match ':version/pods', :controller => 'pod', :action => 'index', :via => :get # get list of pods
   match ':version/pods/:pod_id/messages', :controller => 'pod', :action => 'message_index', :via => :get # get list of messages
   match ':version/pods/:pod_id/members', :controller => 'pod', :action => 'members', :via => :get # get list of members
