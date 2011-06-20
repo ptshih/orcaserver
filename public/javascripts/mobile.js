@@ -8,7 +8,7 @@ function sendmessage() {
   if (formData.length > 0) {
     $.ajax({
 		type: "POST",
-		url: "http://localhost:3000/v1/pods/1/messages/create?",
+		url: "http://orcapods.heroku.com/v1/pods/1/messages/create?",
 		cache: false,
 		data: formData,
 		success: onSuccess
