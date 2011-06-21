@@ -204,7 +204,7 @@ class PodController < ApplicationController
     # metadata_hash = JSON.parse metadata
     # http://flori.github.com/json/doc/index.html
     metadata_hash = {}
-    param_ignore_list = ['controller','version', 'message', 'sequence', 'access_token', 'pod_id']
+    param_ignore_list = ['controller','version', 'message', 'sequence', 'access_token', 'pod_id', '(null)']
     params.each do |key, value|
       # Store the param if it's not in the ignore list
       if !param_ignore_list.include?(key) && !key.nil?
@@ -252,7 +252,7 @@ class PodController < ApplicationController
   # @param REQUIRED access_token (user who is doing the adding)
   # @param REQUIRED pod_id
   # @param REQUIRED user_id
-  # http://orcapods.heroku.com/v1/pods/13/user/443/add?access_token=omgwtfbbqadmin
+  # http://orcapods.heroku.com/v1/pods/13/user/443/remove?access_token=omgwtfbbqadmin
   def remove_user
     
     Rails.logger.info request.query_parameters.inspect
