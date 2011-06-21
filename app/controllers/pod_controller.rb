@@ -207,7 +207,7 @@ class PodController < ApplicationController
     param_ignore_list = ['controller','version', 'message', 'sequence', 'access_token', 'pod_id']
     params.each do |key, value|
       # Store the param if it's not in the ignore list
-      if !param_ignore_list.include?(key)
+      if !param_ignore_list.include?(key) && !value.nil?
         metadata_hash[key] = value
       end
     end
