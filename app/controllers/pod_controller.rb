@@ -215,7 +215,7 @@ class PodController < ApplicationController
     metadata = JSON.generate metadata_hash
     
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:photo_url], params[:photo_width], params[:photo_height], metadata, params[:lat], params[:lng])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], metadata)
     #response = Pod.create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:photo_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
     
     response = {:success => "True: "+response}
