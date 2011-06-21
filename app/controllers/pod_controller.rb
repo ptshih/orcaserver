@@ -153,7 +153,7 @@ class PodController < ApplicationController
       :created_at => Time.now.utc.to_s(:db),
       :updated_at => Time.now.utc.to_s(:db)
     )
-    response = newpod.add_user_to_pod(@current_user.id)
+    response = newpod.add_user_to_pod(@current_user.id, @current_user.id)
     # response = Pod.create(@current_user.id, params[:sequence], params[:name])
     
     response = {:success => "true"}
@@ -175,7 +175,7 @@ class PodController < ApplicationController
   # @param OPTIONAL metadata
   # @param OPTIONAL lat
   # @param OPTIONAL lng
-  # http://localhost:3000/v1/pods/13/messages/create?message=helloworld832h4&access_token=
+  # http://localhost:3000/v1/pods/16/messages/create?message=blahfirstmessageya
   # http://orcapods.heroku.com/v1/pods/13/messages/create?message=pictest&photo_url=XXX&sequence=1&photo_width=400&photo_height=300
   def message_new
     
@@ -201,8 +201,22 @@ class PodController < ApplicationController
       AWS::S3::S3Object.store(photo_file_name, open(photo_file), 'orcapods', :access => :public_read)
     end
     
+    # metadata = JSON.generate metadata_hash (or use JSON.pretty_generate but waste of space)
+    # metadata_hash = JSON.parse metadata
+    # http://flori.github.com/json/doc/index.html
+    metadata_hash = {}
+    param_ignore_list = ['controller','version', 'message', 'sequence', 'pod_id']
+    params.each do |key, value|
+      # Store the param if it's not in the ignore list
+      if !param_ignore_list.include?(key)
+        metadata_hash[key] = value
+      end
+    end
+
+    metadata = JSON.generate metadata_hash
+    
     # Change to use create_message_via_resque
-    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:photo_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
+    response = Pod.async_create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:photo_url], params[:photo_width], params[:photo_height], metadata, params[:lat], params[:lng])
     #response = Pod.create_message(params[:pod_id], @current_user.id, @current_user.get_short_name, params[:sequence], params[:message], params[:photo_url], params[:photo_width], params[:photo_height], params[:metadata], params[:lat], params[:lng])
     
     response = {:success => "True: "+response}
