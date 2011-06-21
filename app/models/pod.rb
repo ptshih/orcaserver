@@ -76,8 +76,7 @@ class Pod < ActiveRecord::Base
     response_array = []
     query = "
         SELECT m.id, pod_id, m.sequence, u.id as userid, u.facebook_id, u.full_name,
-          m.message, m.photo_url, m.photo_width, m.photo_height, m.sequence, m.lat, m.lng,
-          m.updated_at
+          m.message, m.metadata, m.sequence, m.updated_at
         FROM messages m
         join users u on u.id = m.user_id
         WHERE pod_id = #{pod_id}
@@ -85,11 +84,15 @@ class Pod < ActiveRecord::Base
     "
     qresult = ActiveRecord::Base.connection.execute(query)
     qresult.each(:as => :hash) do |row|
+      metadata = row['metadata']
+      if !metadata.nil?
+        metadata_hash = JSON.parse metadata
+        metadata_hash.each do |key, value|
+          row[key] = value
+        end
+      end
       response_array << row
     end
-    # @DB.fetch(query) do |row|
-    #       response_array << row
-    #     end
     return response_array    
   end
   

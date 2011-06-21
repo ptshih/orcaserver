@@ -172,7 +172,6 @@ class PodController < ApplicationController
   # @param OPTIONAL photo_url
   # @param OPTIONAL photo_width
   # @param OPTIONAL photo_height
-  # @param OPTIONAL metadata
   # @param OPTIONAL lat
   # @param OPTIONAL lng
   # http://localhost:3000/v1/pods/16/messages/create?message=blahfirstmessageya
