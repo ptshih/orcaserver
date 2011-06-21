@@ -205,7 +205,7 @@ class PodController < ApplicationController
     # metadata_hash = JSON.parse metadata
     # http://flori.github.com/json/doc/index.html
     metadata_hash = {}
-    param_ignore_list = ['controller','version', 'message', 'sequence', 'pod_id']
+    param_ignore_list = ['controller','version', 'message', 'sequence', 'access_token', 'pod_id']
     params.each do |key, value|
       # Store the param if it's not in the ignore list
       if !param_ignore_list.include?(key)
