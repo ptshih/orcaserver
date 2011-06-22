@@ -1,3 +1,7 @@
+require 'rubygems'
+require 'typhoeus'
+require 'json'
+
 class PodController < ApplicationController
   
   before_filter do |controller|
@@ -198,6 +202,29 @@ class PodController < ApplicationController
         :secret_access_key => 'XoNIhyk72m/rvVb4s5BBBxOi9Pl2eTcEzxDS2NGK'
       )
       AWS::S3::S3Object.store(photo_file_name, open(photo_file), 'orcapods', :access => :public_read)
+    end
+    
+    # for fun
+    if params['pod_id']=='2'
+      headers_hash = Hash.new
+      headers_hash['Accept'] = 'application/json'
+      phash = Hash.new
+      base_url = "https://www.googleapis.com/language/translate/v2"
+      phash['key'] = "AIzaSyC8p9ghNKKOTGz3NZNQPo564JJXbHKZSME"
+      phash['source']="en"
+      phash['q'] = params[:message]
+      phash['target']= "zh-TW"
+      translateresponse = Typhoeus::Request.get(base_url, :params => phash, :headers => headers_hash, :disable_ssl_peer_verification => true)
+      trans_resp = JSON.parse(translateresponse.body)
+      
+      #params[:message] = 'translate '+trans_resp['data']['translations'][0]
+      if !trans_resp['data'].nil?
+        if !trans_resp['data']['translations'].nil?
+          if !trans_resp['data']['translations'][0]['translatedText'].nil?
+            params[:message] = trans_resp['data']['translations'][0]['translatedText']
+          end
+        end
+      end # end check response
     end
     
     # metadata = JSON.generate metadata_hash (or use JSON.pretty_generate but waste of space)
