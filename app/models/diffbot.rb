@@ -21,4 +21,13 @@ class Diffbot < ActiveRecord::Base
     
   end
   
+  def self.get_unfetched_articles
+    
+    query = "select link from diffbots where v_md5 is null"
+    qresult = ActiveRecord::Base.connection.execute(query)
+    
+    
+    
+  end
+  
 end
