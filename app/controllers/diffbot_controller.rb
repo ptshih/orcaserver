@@ -46,7 +46,7 @@ class DiffbotController < ApplicationController
                   if !link['href'].nil? && save_link ==''
                     save_link = link['href']
                     item_hash['link'] = save_link
-                    item_hash['v_md5'] = Digest::MD5.hexdigest(save_link)
+                    # item_hash['v_md5'] = Digest::MD5.hexdigest(save_link)
                   end
               end
             end
