@@ -1,5 +1,7 @@
 Orcapods::Application.routes.draw do
   
+  resources :pod
+  
 ## Register/signons
   match ':version/register', :to => 'login#register', :via => ["get","post"]  # CREATE: Register new user with access_token
   match ':version/session', :to => 'login#session', :via => ["get","post"] # SESSION: Start a new session for the current user
@@ -10,9 +12,6 @@ Orcapods::Application.routes.draw do
   match ':version/pods', :controller => 'pod', :action => 'index', :via => :get # get list of pods
   match ':version/pods/:pod_id/messages', :controller => 'pod', :action => 'message_index', :via => :get # get list of messages
   match ':version/pods/:pod_id/members', :controller => 'pod', :action => 'members', :via => :get # get list of members
-  
-  
-  resources :pod
   
 ## Writes
   # Create pod
@@ -27,6 +26,9 @@ Orcapods::Application.routes.draw do
   match ':version/pods/:pod_id/user/:user_id/remove', :controller => 'pod', :action =>'remove_user', :via => ["get","post"]
   # Change pod name
   match ':version/pods/:pod_id/change_name', :controller => 'pod', :action =>'change_pod_name', :via => ["get","post"]  
+
+## Diffbot
+  match ':version/diffbot', :controller => 'diffbot', :action =>'fetch_url', :via => ["get","post"]
 
   # http://localhost:3000/v1/pods
   # http://localhost:3000/v1/pods/1/messages
