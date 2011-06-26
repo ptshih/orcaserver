@@ -235,7 +235,7 @@ class PodController < ApplicationController
     # metadata = JSON.generate metadata_hash
     metadata = JSON.parse params['metadata']
     # Create message back
-    if params['message_type'] == 'link'
+    if params['message_type'] == 'link' || params['message_type']=='youtube'
       url = metadata['message']
       Article.fetch_diffbot_article(url)
       v_md5 = Digest::MD5.hexdigest(url)
@@ -245,8 +245,13 @@ class PodController < ApplicationController
         
         media = JSON.parse row['media']
         media.each do |media_child|
+          # Default sets a primary images
           if media_child['primary']=='true' && media_child['type']=='image' && !media_child['link'].nil?
             metadata['link_thumbnail_url'] = media_child['link']
+          # Otherwise create thumbnail for youtube
+          elsif media_child['type']=='video' && params['message_type']=='youtube'
+            video_key = media_child['link'][29..100]
+            metadata['link_thumbnail_url'] = 'http://i4.ytimg.com/vi/#{video_key}/default.jpg'
           end
         end
         
