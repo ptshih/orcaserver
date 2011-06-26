@@ -75,8 +75,8 @@ class Pod < ActiveRecord::Base
   def self.message_index(pod_id, user_id)
     response_array = []
     query = "
-        SELECT m.id, pod_id, m.sequence, u.id as userid, u.facebook_id, u.full_name,
-          m.message, m.metadata, m.sequence, m.updated_at
+        SELECT m.id, m.pod_id, m.sequence, m.metadata, m.updated_at,
+          u.id as user_id, u.facebook_id, u.full_name
         FROM messages m
         join users u on u.id = m.user_id
         WHERE pod_id = #{pod_id}

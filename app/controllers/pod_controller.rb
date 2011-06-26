@@ -65,15 +65,10 @@ class PodController < ApplicationController
           :id => message['id'].to_s,
           :podId => message['pod_id'].to_s,
           :sequence => message['sequence'].to_s,
-          :fromId => message['userid'].to_s,
+          :fromId => message['user_id'].to_s,
           :fromName => message['full_name'],
           :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
-          :message => message['message'],
-          :photoUrl => message['photo_url'],
-          :photoWidth => message['photo_width'].to_i,
-          :photoHeight => message['photo_height'].to_i,
-          :lat => message['lat'],
-          :lng => message['lng'],
+          :metadata => message['metadata'],
           :timestamp => message['updated_at'].to_i
         }
     end
