@@ -75,7 +75,7 @@ class Pod < ActiveRecord::Base
   def self.message_index(pod_id, user_id)
     response_array = []
     query = "
-        SELECT m.id, m.pod_id, m.sequence, m.metadata, m.updated_at,
+        SELECT m.id, m.pod_id, m.sequence, m.message_type, m.metadata, m.updated_at,
           u.id as user_id, u.facebook_id, u.full_name
         FROM messages m
         join users u on u.id = m.user_id
@@ -112,22 +112,29 @@ class Pod < ActiveRecord::Base
   end
 
   
-  def self.async_create_message(user_id, current_user_name, params_json, metadata)
-    Pod.async(:create_message,user_id, current_user_name, params_json, metadata)
+  def self.async_create_message(params_json)
+    Pod.async(:create_message , params_json)
     return ""
   end
 
-  def self.create_message(user_id, current_user_name, params_json, metadata)
+  def self.create_message(params_json)
 
     params = JSON.parse params_json
     pod_id = params['pod_id']
     sequence = params['sequence']
+    user_id = params['user_id']
+    current_user_name = params['user_short_name']
+    metadata = params['metadata']
+    message_type = params['message_type']
+    
+    message = JSON.parse(metadata)['message']
+    
     if sequence.nil?
       sequence = UUIDTools::UUID.random_create.to_s
     end
-    message_type = params['message_type']
     created_at = Time.now.utc.to_s(:db)
     updated_at = Time.now.utc.to_s(:db)
+    
     query = "
       INSERT INTO messages (pod_id, user_id, sequence, metadata, message_type, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
