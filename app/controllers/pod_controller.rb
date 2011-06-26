@@ -68,6 +68,7 @@ class PodController < ApplicationController
           :fromId => message['user_id'].to_s,
           :fromName => message['full_name'],
           :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
+          :messageType => message['message_type'],
           :metadata => message['metadata'],
           :timestamp => message['updated_at'].to_i
         }
