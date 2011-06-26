@@ -112,12 +112,12 @@ class Pod < ActiveRecord::Base
   end
 
   
-  def self.async_create_message(pod_id, user_id, current_user_name, sequence, message, metadata=nil)
-    Pod.async(:create_message,pod_id, user_id, current_user_name, sequence, message, metadata)
+  def self.async_create_message(user_id, current_user_name, params)
+    Pod.async(:create_message,user_id, current_user_name, params)
     return ""
   end
-  
-  def self.create_message(pod_id, user_id, current_user_name, sequence, message, metadata=nil)
+
+  def self.create_message(user_id, current_user_name, params)
 
     created_at = Time.now.utc.to_s(:db)
     updated_at = Time.now.utc.to_s(:db)    
@@ -126,10 +126,10 @@ class Pod < ActiveRecord::Base
     #         VALUES (#{pod_id}, #{user_id}, \'#{sequence}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
     # "
     query = "
-      INSERT INTO messages (pod_id, user_id, sequence, message, metadata, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO messages (pod_id, user_id, sequence, metadata, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
     "
-    query = sanitize_sql_array([query, pod_id, user_id, sequence, message, metadata, created_at, updated_at])
+    query = sanitize_sql_array([query, pod_id, user_id, sequence, metadata, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "
