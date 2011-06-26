@@ -7,8 +7,7 @@ class Article < ActiveRecord::Base
   
   @access_token = '965862e81bea448ffa44d8c902195820'
   
-  def fetch_diffbot_article
-    url = params[:url]
+  def self.fetch_diffbot_article(url=nil)
     if !url.nil?
       headers_hash = Hash.new
       headers_hash['Accept'] = 'application/json'
@@ -22,14 +21,20 @@ class Article < ActiveRecord::Base
       response = Typhoeus::Request.get(base_url, :params => phash, :headers => headers_hash, :disable_ssl_peer_verification => true)
       parsed_response = JSON.parse(response.body)
       
+      title = parsed_response['title']
+      url = parsed_response['url']
+      v_md5 = Digest::MD5.hexdigest(url)
+      summary = parsed_response['summary']
+      author = parsed_response['author']
+      tags = parsed_response['tags']
+      
       query = "
         insert into articles
         (v_md5, title, url, summary, text, author, tags)
         select ?, ?, ?, ?, ?, ?, ?
       "
-      query = sanitize_sql_array([query, hash_values['title'], mytime, hash_values['link'], hash_values['guid'], hash_values['description'], metadata, hash_values['enclosure']])
+      query = sanitize_sql_array([query, v_md5, title, url, summary, text, author, tags])
       qresult = ActiveRecord::Base.connection.execute(query)
-      
       
     end
     
