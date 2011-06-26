@@ -148,7 +148,7 @@ class PodController < ApplicationController
     puts "params: #{params}"
     
     if params[:sequence].nil?
-      params[:sequence] = SecureRandom.hex(64)
+      params[:sequence] = UUIDTools::UUID.random_create.to_s
     end
     
     newpod = Pod.create(

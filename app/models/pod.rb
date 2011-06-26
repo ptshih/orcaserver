@@ -119,17 +119,20 @@ class Pod < ActiveRecord::Base
 
   def self.create_message(user_id, current_user_name, params)
 
+    pod_id = params[:pod_id]
+    sequence = params[:sequence]
+    if sequence.nil?
+      sequence = UUIDTools::UUID.random_create.to_s
+    end
+    metadata = params[:metadata]
+    message_type = params[:message_type]
     created_at = Time.now.utc.to_s(:db)
-    updated_at = Time.now.utc.to_s(:db)    
-    # query = "
-    #   INSERT INTO messages (pod_id, user_id, sequence, message, created_at, updated_at)
-    #         VALUES (#{pod_id}, #{user_id}, \'#{sequence}\', \'#{message.gsub(/\\|'/) { |c| "\\#{c}" }}\', now(), now())
-    # "
+    updated_at = Time.now.utc.to_s(:db)
     query = "
-      INSERT INTO messages (pod_id, user_id, sequence, metadata, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO messages (pod_id, user_id, sequence, metadata, message_type, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     "
-    query = sanitize_sql_array([query, pod_id, user_id, sequence, metadata, created_at, updated_at])
+    query = sanitize_sql_array([query, pod_id, user_id, sequence, metadata, message_type, created_at, updated_at])
     qresult = ActiveRecord::Base.connection.execute(query)
     
     query = "
@@ -187,9 +190,10 @@ class Pod < ActiveRecord::Base
 
     user = User.find_by_id(user_id)
 
-    message_sequence = SecureRandom.hex(64)
-    message = "changed pod name to #{name}"
-    Pod.async_create_message(pod_id, user.id, user.get_short_name, message_sequence, message)
+    params = {}
+    params[:message] = "changed pod name to #{name}"
+    params[:pod_id] = pod_id
+    Pod.async_create_message(user.id, user.get_short_name, params)
     
     return message
     
@@ -217,9 +221,10 @@ class Pod < ActiveRecord::Base
 
     # when user has joined pod, add message to pod stating the join
     if rowcount>0
-      message_sequence = SecureRandom.hex(64)
-      message = "added #{added_user.full_name} to pod #{self.name}"
-      Pod.async_create_message(self.id, user_id, user.get_short_name, message_sequence, message)
+      params = {}
+      params[:message] = "added #{added_user.full_name} to pod #{self.name}"
+      params[:pod_id] = self.id
+      Pod.async_create_message(user_id, user.get_short_name, params)
       return true
     end
     
@@ -240,9 +245,10 @@ class Pod < ActiveRecord::Base
     user = User.find_by_id(user_id)
 
     # when user has left the pod, add message to pod stating the remove
-    message_sequence = SecureRandom.hex(64)
-    message = "removed #{target_user.full_name} from pod"
-    Pod.async_create_message(self.id, user_id, user.get_short_name, message_sequence, message)
+    params = []
+    params[:message] = "removed #{target_user.full_name} from pod"
+    params[:pod_id] = self.id
+    Pod.async_create_message(user_id, user.get_short_name, params)
     return true
     
   end
