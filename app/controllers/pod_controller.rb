@@ -235,8 +235,8 @@ class PodController < ApplicationController
     # metadata = JSON.generate metadata_hash
     metadata = JSON.parse params['metadata']
     # Create message back
-    if params_hash['message_type'] == 'link'
-      url = JSON.parse(metadata)['message']
+    if params['message_type'] == 'link'
+      url = metadata['message']
       Article.fetch_diffbot_article(url)
       v_md5 = Digest::MD5.hexdigest(url)
       query = "select * from articles where v_md5 = #{v_md5}"
