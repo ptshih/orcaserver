@@ -7,6 +7,7 @@ gem 'mysql2'
 gem 'typhoeus'
 gem 'json'
 gem 'aws-s3', :require => 'aws/s3'
+gem 'uuidtools'
 
 # gem 'sinatra', '1.1.0'
 # gem 'thin', '1.2.7'
