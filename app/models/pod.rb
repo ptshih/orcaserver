@@ -50,7 +50,7 @@ class Pod < ActiveRecord::Base
     participants_hash[1] = ['Public Room']
     
     query = "
-      SELECT p.id, p.name, m.message, m.sequence, u.id as userid, u.facebook_id, u.full_name, p.updated_at
+      SELECT p.id, p.name, m.sequence, m.metadata, u.id as userid, u.facebook_id, u.full_name, p.updated_at
       FROM pods p
       JOIN messages m on p.last_message_id = m.id
       JOIN users u on u.id = m.user_id

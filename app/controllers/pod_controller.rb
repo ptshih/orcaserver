@@ -26,13 +26,10 @@ class PodController < ApplicationController
         :from_id => pod['userid'].to_s,
         :from_name => pod['full_name'],
         :from_picture_url => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
-        :message => pod['message'],
         :sequence => pod['sequence'],
         :participants => pod['participants'],
-        :lat => nil,
-        :lng => nil,
-        :timestamp => pod['updated_at'].to_i,
-        :logged_in_as => @current_user.full_name
+        :metadata => pod['metadata'],
+        :timestamp => pod['updated_at'].to_i
       }
     end
     
