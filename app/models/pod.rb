@@ -112,21 +112,19 @@ class Pod < ActiveRecord::Base
   end
 
   
-  def self.async_create_message(user_id, current_user_name, params_json)
-    Pod.async(:create_message,user_id, current_user_name, params_json)
+  def self.async_create_message(user_id, current_user_name, params_json, metadata)
+    Pod.async(:create_message,user_id, current_user_name, params_json, metadata)
     return ""
   end
 
-  def self.create_message(user_id, current_user_name, params_json)
+  def self.create_message(user_id, current_user_name, params_json, metadata)
 
     params = JSON.parse params_json
-
     pod_id = params['pod_id']
     sequence = params['sequence']
     if sequence.nil?
       sequence = UUIDTools::UUID.random_create.to_s
     end
-    metadata = params['metadata']
     message_type = params['message_type']
     created_at = Time.now.utc.to_s(:db)
     updated_at = Time.now.utc.to_s(:db)
