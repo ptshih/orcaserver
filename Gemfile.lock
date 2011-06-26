@@ -91,6 +91,7 @@ GEM
       mime-types
       mime-types
     tzinfo (0.3.27)
+    uuidtools (2.1.2)
     vegas (0.1.8)
       rack (>= 1.0.0)
     xml-simple (1.1.0)
@@ -115,5 +116,6 @@ DEPENDENCIES
   sequel
   sinatra
   typhoeus
+  uuidtools
   vegas
   yajl-ruby
