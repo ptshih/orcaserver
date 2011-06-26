@@ -127,6 +127,8 @@ class Pod < ActiveRecord::Base
     metadata = params['metadata']
     message_type = params['message_type']
     
+    message = JSON.parse(metadata)['message']
+    
     if sequence.nil?
       sequence = UUIDTools::UUID.random_create.to_s
     end
