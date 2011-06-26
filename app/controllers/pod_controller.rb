@@ -219,7 +219,7 @@ class PodController < ApplicationController
         end
       end # end check response
     end
-    
+
     # metadata = JSON.generate metadata_hash (or use JSON.pretty_generate but waste of space)
     # metadata_hash = JSON.parse metadata
     # http://flori.github.com/json/doc/index.html
@@ -233,6 +233,30 @@ class PodController < ApplicationController
     # end
     # 
     # metadata = JSON.generate metadata_hash
+    metadata = JSON.parse params['metadata']
+    # Create message back
+    if params_hash['message_type'] == 'link'
+      url = JSON.parse(metadata)['message']
+      Article.fetch_diffbot_article(url)
+      v_md5 = Digest::MD5.hexdigest(url)
+      query = "select * from articles where v_md5 = #{v_md5}"
+      qresult = ActiveRecord::Base.connection.execute(query)
+      qresult.each(:as => :hash) do |row|
+        
+        media = JSON.parse row['media']
+        media.each do |media_child|
+          if media_child['primary']=='true' && media_child['type']=='image' && !media_child['link'].nil?
+            metadata['link_thumbnail_url'] = media_child['link']
+          end
+        end
+        
+        metadata['link_title'] = row['title']
+        metadata['link_source'] = row['url']
+        metadata['link_summary'] = row['summary']
+        
+      end
+      
+    end
     
     # Change to use create_message_via_resque
     if not params.nil?
@@ -242,13 +266,13 @@ class PodController < ApplicationController
       params_hash['pod_id'] = params['pod_id']
       params_hash['sequence'] = params['sequence']
       params_hash['message_type'] = params['message_type']
-      params_hash['metadata'] = params['metadata']
+      params_hash['metadata'] = metadata
       
       params_json = JSON.generate params_hash
         
       response = Pod.async_create_message(params_json)
     end
-    
+        
     response = {:success => "True: "+response}
     respond_to do |format|
       format.xml  { render :xml => response }
