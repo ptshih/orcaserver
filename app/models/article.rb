@@ -26,14 +26,16 @@ class Article < ActiveRecord::Base
       v_md5 = Digest::MD5.hexdigest(url)
       summary = parsed_response['summary']
       author = parsed_response['author']
-      tags = parsed_response['tags']
-      
+      tags = JSON.generate parsed_response['tags']
+      text = parsed_response['text']
+      created_at = Time.now.utc.to_s(:db)
+      updated_at = Time.now.utc.to_s(:db)
       query = "
-        insert into articles
-        (v_md5, title, url, summary, text, author, tags)
-        select ?, ?, ?, ?, ?, ?, ?
+        insert ignore into articles
+        (v_md5, title, url, summary, text, author, tags, created_at, updated_at)
+        select ?, ?, ?, ?, ?, ?, ?, ?, ?
       "
-      query = sanitize_sql_array([query, v_md5, title, url, summary, text, author, tags])
+      query = sanitize_sql_array([query, v_md5, title, url, summary, text, author, tags, created_at, updated_at])
       qresult = ActiveRecord::Base.connection.execute(query)
       
     end
