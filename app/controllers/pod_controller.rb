@@ -251,7 +251,7 @@ class PodController < ApplicationController
           # Otherwise create thumbnail for youtube
           elsif media_child['type']=='video' && params['message_type']=='youtube'
             video_key = media_child['link'][29..100]
-            metadata['link_thumbnail_url'] = 'http://i4.ytimg.com/vi/#{video_key}/default.jpg'
+            metadata['link_thumbnail_url'] = "http://i4.ytimg.com/vi/#{video_key}/default.jpg"
           end
         end
         
