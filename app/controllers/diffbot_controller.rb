@@ -3,9 +3,10 @@ require 'typhoeus'
 require 'json'
 require 'nokogiri'
 
+# Working urls
+# news.google.com, techcrunch.com, nytimes.com, cnn.com
+
 class DiffbotController < ApplicationController
-  
-  @access_token = '965862e81bea448ffa44d8c902195820'
   
   before_filter do |controller|
     # This will set the @version variable

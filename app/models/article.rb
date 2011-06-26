@@ -26,7 +26,9 @@ class Article < ActiveRecord::Base
       v_md5 = Digest::MD5.hexdigest(url)
       summary = parsed_response['summary']
       author = parsed_response['author']
-      tags = JSON.generate parsed_response['tags']
+      if !parsed_response['tags'].nil?
+        tags = JSON.generate parsed_response['tags']
+      end
       text = parsed_response['text']
       created_at = Time.now.utc.to_s(:db)
       updated_at = Time.now.utc.to_s(:db)
