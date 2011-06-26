@@ -234,12 +234,14 @@ class PodController < ApplicationController
     # 
     # metadata = JSON.generate metadata_hash
     metadata = JSON.parse params['metadata']
+    puts "metadata: #{metadata}"
     # Create message back
     if params['message_type'] == 'link'
       url = metadata['message']
+      puts "url: #{url}"
       Article.fetch_diffbot_article(url)
       v_md5 = Digest::MD5.hexdigest(url)
-      query = "select * from articles where v_md5 = #{v_md5}"
+      query = "select * from articles where v_md5 = '#{v_md5}'"
       qresult = ActiveRecord::Base.connection.execute(query)
       qresult.each(:as => :hash) do |row|
         
@@ -266,7 +268,7 @@ class PodController < ApplicationController
       params_hash['pod_id'] = params['pod_id']
       params_hash['sequence'] = params['sequence']
       params_hash['message_type'] = params['message_type']
-      params_hash['metadata'] = metadata
+      params_hash['metadata'] = JSON.generate metadata
       
       params_json = JSON.generate params_hash
         
