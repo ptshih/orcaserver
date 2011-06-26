@@ -90,3 +90,6 @@ end
 # @doc.xpath("//description")[3].children[0].content
 # doc_html = Nokogiri::HTML(@doc.xpath("//description")[3].children[0].content)
 # doc_html.xpath("//h3/a").map { |link| link['href'] }
+
+
+# doc_html = Nokogiri::HTML('www.youtube.com/watch?v=5I-fARuUY58')
