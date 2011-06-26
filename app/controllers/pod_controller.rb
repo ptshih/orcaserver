@@ -23,9 +23,9 @@ class PodController < ApplicationController
       response << {
         :id => pod['id'].to_s,
         :name => pod['name'],
-        :fromId => pod['userid'].to_s,
-        :fromName => pod['full_name'],
-        :fromPictureUrl => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
+        :from_id => pod['userid'].to_s,
+        :from_name => pod['full_name'],
+        :from_picture_url => "http://graph.facebook.com/"+pod['facebook_id'].to_s+"/picture?type=square",
         :message => pod['message'],
         :sequence => pod['sequence'],
         :participants => pod['participants'],
@@ -63,12 +63,12 @@ class PodController < ApplicationController
     resp.each do |message|
       response << {
           :id => message['id'].to_s,
-          :podId => message['pod_id'].to_s,
+          :pod_id => message['pod_id'].to_s,
           :sequence => message['sequence'].to_s,
-          :fromId => message['user_id'].to_s,
-          :fromName => message['full_name'],
-          :fromPictureUrl => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
-          :messageType => message['message_type'],
+          :from_id => message['user_id'].to_s,
+          :from_name => message['full_name'],
+          :from_picture_url => "http://graph.facebook.com/"+message['facebook_id'].to_s+"/picture?type=square",
+          :message_type => message['message_type'],
           :metadata => message['metadata'],
           :timestamp => message['updated_at'].to_i
         }
