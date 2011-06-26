@@ -238,7 +238,8 @@ class PodController < ApplicationController
     
     # Change to use create_message_via_resque
     if not params.nil?
-      response = Pod.async_create_message(@current_user.id, @current_user.get_short_name, params)
+      params_json = JSON.generate params
+      response = Pod.async_create_message(@current_user.id, @current_user.get_short_name, params_json)
     end
     
     response = {:success => "True: "+response}

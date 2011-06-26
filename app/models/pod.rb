@@ -112,20 +112,22 @@ class Pod < ActiveRecord::Base
   end
 
   
-  def self.async_create_message(user_id, current_user_name, params)
-    Pod.async(:create_message,user_id, current_user_name, params)
+  def self.async_create_message(user_id, current_user_name, params_json)
+    Pod.async(:create_message,user_id, current_user_name, params_json)
     return ""
   end
 
-  def self.create_message(user_id, current_user_name, params)
+  def self.create_message(user_id, current_user_name, params_json)
 
-    pod_id = params[:pod_id]
-    sequence = params[:sequence]
+    params = JSON.parse params_json
+
+    pod_id = params['pod_id']
+    sequence = params['sequence']
     if sequence.nil?
       sequence = UUIDTools::UUID.random_create.to_s
     end
-    metadata = params[:metadata]
-    message_type = params[:message_type]
+    metadata = params['metadata']
+    message_type = params['message_type']
     created_at = Time.now.utc.to_s(:db)
     updated_at = Time.now.utc.to_s(:db)
     query = "
@@ -193,7 +195,8 @@ class Pod < ActiveRecord::Base
     params = {}
     params[:message] = "changed pod name to #{name}"
     params[:pod_id] = pod_id
-    Pod.async_create_message(user.id, user.get_short_name, params)
+    params_json = JSON.generate params
+    Pod.async_create_message(user.id, user.get_short_name, params_json)
     
     return message
     
@@ -223,8 +226,9 @@ class Pod < ActiveRecord::Base
     if rowcount>0
       params = {}
       params[:message] = "added #{added_user.full_name} to pod #{self.name}"
-      params[:pod_id] = self.id
-      Pod.async_create_message(user_id, user.get_short_name, params)
+      params[:pod_id] = self.id    
+      params_json = JSON.generate params
+      Pod.async_create_message(user.id, user.get_short_name, params_json)
       return true
     end
     
@@ -248,7 +252,8 @@ class Pod < ActiveRecord::Base
     params = []
     params[:message] = "removed #{target_user.full_name} from pod"
     params[:pod_id] = self.id
-    Pod.async_create_message(user_id, user.get_short_name, params)
+    params_json = JSON.generate params
+    Pod.async_create_message(user.id, user.get_short_name, params_json)
     return true
     
   end

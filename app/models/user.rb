@@ -61,10 +61,13 @@ class User < ActiveRecord::Base
     
     # when user has joined pod, add message to pod stating the join
     if rowcount>0
-      message_sequence = SecureRandom.hex(64)
+
       joined_pod=Pod.find_by_id(pod_id)
-      message = " joined pod #{joined_pod.name}"
-      Pod.async_create_message(pod_id, self.id, self.get_short_name, message_sequence, message)
+      params = {}
+      params['message'] = " joined pod #{joined_pod.name}"
+      params['pod_id'] = pod_id
+      params_json = JSON.generate params
+      Pod.async_create_message(self.id, self.get_short_name, params_json)
     end
     
   end
