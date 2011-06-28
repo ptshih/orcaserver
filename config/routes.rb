@@ -1,20 +1,35 @@
 Orcapods::Application.routes.draw do
   
-  # Register/signons
+  resources :pod
+  
+## Register/signons
   match ':version/register', :to => 'login#register', :via => ["get","post"]  # CREATE: Register new user with access_token
   match ':version/session', :to => 'login#session', :via => ["get","post"] # SESSION: Start a new session for the current user
-  match ':version/registerpush', :to => 'login#registerpush', :via => ["get","post"] # SESSION: Start a new session for the current user
+  match ':version/registerpush', :to => 'login#registerpush', :via => ["get","post"] # Start a new session for the current user
 
   
-  # Read
+## Read
   match ':version/pods', :controller => 'pod', :action => 'index', :via => :get # get list of pods
   match ':version/pods/:pod_id/messages', :controller => 'pod', :action => 'message_index', :via => :get # get list of messages
-
-  # Writes
+  match ':version/pods/:pod_id/members', :controller => 'pod', :action => 'members', :via => :get # get list of members
+  
+## Writes
+  # Create pod
   match ':version/pods/create', :controller => 'pod', :action =>'new', :via => ["get","post"]
+  # Create message
   match ':version/pods/:pod_id/messages/create', :controller => 'pod', :action =>'message_new', :via => ["get","post"]
-  match ':version/pods/:pod_id/mute', :controller => 'pod', :action =>'mute_pod', :via => ["get","post"]
+  # Mute pod
+  match ':version/pods/:pod_id/mute/:hours', :controller => 'pod', :action =>'mute_pod', :via => ["get","post"]
+  # Add user to pod
+  match ':version/pods/:pod_id/user/:user_id/add', :controller => 'pod', :action =>'add_user', :via => ["get","post"]
+  # Remove user to pod
+  match ':version/pods/:pod_id/user/:user_id/remove', :controller => 'pod', :action =>'remove_user', :via => ["get","post"]
+  # Change pod name
+  match ':version/pods/:pod_id/change_name', :controller => 'pod', :action =>'change_pod_name', :via => ["get","post"]  
 
+## Diffbot
+  match ':version/diffbot', :controller => 'diffbot', :action =>'fetch_url', :via => ["get","post"]
+  
 
   # http://localhost:3000/v1/pods
   # http://localhost:3000/v1/pods/1/messages

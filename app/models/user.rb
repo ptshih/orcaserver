@@ -25,11 +25,11 @@ class User < ActiveRecord::Base
 
   end
   
-  def mute_pod(pod_id)
+  def mute_pod(pod_id, hours)
     
     now_time = Time.now.utc.to_s(:db)
-    # Mute 8 hours later
-    mute_until = (Time.now.utc+60*60*8).to_s(:db)
+    # Mute x hours later
+    mute_until = (Time.now.utc+60*60*hours).to_s(:db)
     query = "
       update pods_users m
       set mute_until = '#{mute_until}', updated_at = '#{now_time}'
@@ -41,8 +41,11 @@ class User < ActiveRecord::Base
     
   end
   
-  def add_to_party_pod
-    pod_id = 1
+  def add_to_pod(pod_id=nil)
+    
+    if pod_id.nil?
+      pod_id=1
+    end
     now_time = Time.now.utc.to_s(:db)
     query = " insert ignore into pods_users
               (user_id, pod_id, updated_at, created_at)
@@ -58,10 +61,13 @@ class User < ActiveRecord::Base
     
     # when user has joined pod, add message to pod stating the join
     if rowcount>0
-      message_sequence = SecureRandom.hex(64)
+
       joined_pod=Pod.find_by_id(pod_id)
-      message = " joined pod #{joined_pod.name}"
-      Pod.async_create_message(pod_id, self.id, self.get_short_name, message_sequence, message)
+      params = {}
+      params['message'] = " joined pod #{joined_pod.name}"
+      params['pod_id'] = pod_id
+      params_json = JSON.generate params
+      Pod.async_create_message(self.id, self.get_short_name, params_json)
     end
     
   end
@@ -70,10 +76,10 @@ class User < ActiveRecord::Base
   def get_short_name
     user_name = ""
     if !self.first_name.nil?
-      user_name = self.first_name
+      user_name = self.first_name.to_s
     end
-    if self.last_name.length>1
-      user_name = user_name + " " + self.last_name[0]
+    if !self.last_name.nil?
+      user_name = user_name + " " + self.last_name[0].to_s
     end
     return user_name
   end

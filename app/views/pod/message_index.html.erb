@@ -1,0 +1,48 @@
+<!-- pod messages page -->
+<div data-role="page" id="messagelist" data-theme="b">
+	
+  <div data-role="header" id="header">
+	<a href="jqm-demo.html" data-rel="back" data-icon="arrow-l" data-role="button" data-transition="slide" data-direction="reverse" id="pods-btn" onclick="podbtn()">Pods</a>
+	<h1><%= params %></h1>
+	
+	<div class="formwrapper">
+	  <form id="newcomment">
+	    <textarea name="message" id="message" placeholder="Send a message..." data-role="none" class="round-all"></textarea>
+		<div class="submitbtn"><button data-role="button" data-icon="check" id="submit" data-theme="g" onclick="sendmessage()">Send</button></div>
+		<script>$(function(){$('#message').autoresize();});</script>
+	  </form>
+	</div>
+	
+  </div>
+
+  <div data-role="content" id="content">
+
+    <% @response_hash["data"].each do |t| %>
+	<div class="messageunit">
+	<!-- make div a link replace above div with a href -->
+	  <div class="messageavatar">
+		<img src="<%= t[:fromPictureUrl] %>">
+	  </div>
+	  <div class="message">
+		<span1><%= t[:fromName] %></span1><br>
+		<span3><%= t[:message] %></span3>
+	  </div>
+	  <div class="messagetimestamp">
+		<span1>5hr</span1>
+	  </div>
+	</div>
+	<% end %>
+	
+  </div><!-- messagecontent -->
+
+  <div data-role="footer">
+	<div class="footerwrapper">
+	  <ul>
+		<li><a href="http://localhost:3000" rel="external">Full Site</a></center>
+		<li>Help
+		<li>About
+	  </ul>
+	</div>
+  </div><!-- endfoot -->
+
+</div>

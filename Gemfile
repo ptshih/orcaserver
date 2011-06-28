@@ -6,6 +6,9 @@ gem 'json'
 gem 'mysql2'
 gem 'typhoeus'
 gem 'json'
+gem 'aws-s3', :require => 'aws/s3'
+gem 'uuidtools'
+gem 'nokogiri'
 
 # gem 'sinatra', '1.1.0'
 # gem 'thin', '1.2.7'
@@ -29,7 +32,6 @@ gem 'json'
 # gem 'bj'
 # gem 'nokogiri'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
-# gem 'aws-s3', :require => 'aws/s3'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
