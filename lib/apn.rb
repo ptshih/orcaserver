@@ -4,6 +4,7 @@ require 'json'
 require 'benchmark'
 require 'resque'
 require 'logger'
+require 'em-websocket'
 
 $logger = Logger.new('/home/bitnami/log/orcapush.log') rescue nil
 
@@ -12,6 +13,23 @@ $logger.datetime_format = "%Y-%m-%d %H:%M:%S"
 def log(o)
   $logger.info(o)
 end
+
+EventMachine.run {
+  @channel = EM::Channel.new
+  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8282, :debug => true) do |ws|
+    ws.onopen {
+      sid = @channel.subscribe { |msg| ws.send msg }
+      @channel.push "#{sid} connected!"
+      ws.onmessage { |msg|
+        @channel.push "<#{sid}>: #{msg}"
+      }
+      ws.onclose {
+        @channel.unsubscribe(sid)
+      }
+    }
+  end
+  puts "Websocket Server started on :8282"
+}
 
 class OrcaAPN
   def initialize
@@ -36,10 +54,12 @@ class OrcaAPN
       payload = {"aps" => {"alert" => message, "sound" => 'default'},'message'=>json.to_json}
       json = payload.to_json()
       token =  [token.delete(' ')].pack('H*')
+      
+      @channel.push(json) rescue nil
     begin
       @ssl.write("\0\0 #{token}\0#{json.length.chr}#{json}")
     rescue => e
-      log e
+      log "#{e.to_s} \n #{e.backtrace}"
       reconnect
       raise e
     end
@@ -72,46 +92,3 @@ while(true)
   end
   sleep 0.5
 end
-
-# require 'apn.rb'
-# def pushToiOSDevice(token,message,json,badge)
-#   # if this happens to be running within a push queue worker
-#   # if there is no apn connection open, open one
-#   if $apn.nil? && ENV['QUEUE']=='pushQueue'
-#     puts 'starting up $apn'
-#     $apn = OrcaAPN.new
-#   end
-# 
-#   if $apn
-#     puts "pushing msg to #{token}"
-#     $apn.push(token,message,json,badge)
-#   else
-#     raise "apple push notification service not available! was this job pushed to the pushQueue? ENV['QUEUE']=#{ENV['QUEUE']}"
-#   end
-# end
-# 
-# 
-# thred1 = Thread.new {
-#   apn = OrcaAPN.new
-#   50.times do |i|
-#     time = Benchmark.measure do
-#       apn.push('1d2301b234494ed1df0b6bfc848840543b5fa45afec8f402a7b7a493b8195464',"sock 1 - #{i} - yo what up",{:code=>{:nest=>[1,2,3]}},0)
-#       sleep 0.05
-#     end
-#   end
-# }
-# 
-# # thred1.resume
-# 
-# thread2 = Thread.new {
-#   apn2 = OrcaAPN.new
-#   50.times do |i|
-#     time = Benchmark.measure do
-#       apn2.push('1d2301b234494ed1df0b6bfc848840543b5fa45afec8f402a7b7a493b8195464',"sock 2 - #{i} - yo what up",{:code=>{:nest=>[1,2,3]}},0)
-#       sleep 0.05
-#     end
-#   end
-# }
-# # thread2.resume
-# sleep 5
-

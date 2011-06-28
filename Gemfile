@@ -49,4 +49,5 @@ group :orcaworkers do
   gem "apnserver"
   gem "daemons"
   gem "eventmachine"
+  gem "em-websocket"
 end
